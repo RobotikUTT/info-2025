@@ -133,15 +133,7 @@ class Log(object):
 
 
 if __name__ == "__main__":
-    config = {
-        'log': {
-            'path': 'test.log',
-            'logger': {},
-            'mode': ['stream', 'file'],
-            'level': "DEBUG"
-        }
-    }
-    log = Log("TestPlugin", config)
+    log = Log("TestPlugin")
     log.info("info message")
     log.debug("debug message")
     log.warn("warning message")
