@@ -6,6 +6,12 @@ log:
 run:
   simulation: False
 i2c_mapping:
-  raspberry: 1
-  esp_sensors: 2
-  esp_actuators: 3
+  raspberry:
+    address: 0x10
+    bus: 1
+  esp_sensors:
+    address: 0x20
+    bus: 2
+  esp_actuators:
+    address: 0x30
+    bus: 3
