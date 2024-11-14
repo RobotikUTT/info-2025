@@ -1,0 +1,11 @@
+log:
+  path: "./debug.log"
+  mode: ["file", "stream", "journal"]
+  logger: {}
+  level: "DEBUG"
+run:
+  simulation: False
+i2c_mapping:
+  raspberry: 1
+  esp_sensors: 2
+  esp_actuators: 3
