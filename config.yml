@@ -12,6 +12,6 @@ i2c_mapping:
   esp_sensors:
     address: 0x20
     bus: 2
-  esp_actuators:
-    address: 0x30
+  esp_steppers:
+    address: 0x08
     bus: 3

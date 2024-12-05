@@ -1,46 +1,38 @@
-# modules/communication/i2c_communication.py
-from typing import Optional
-
-from utils.log import Log
-from utils.config import Config
-import smbus2
+from smbus2 import SMBus
+from typing import Optional, Union
 
 
 class I2CCommunication:
     def __init__(self, device_name: str):
         self.config = Config().get()
         self.log = Log("I2CCommunication")
-        self.bus = smbus2.SMBus(self.config["i2c_mapping"][device_name]["bus"])  # I2C bus number, e.g., 1 for Raspberry Pi
+        self.bus = SMBus(self.config["i2c_mapping"][device_name]["bus"])  # I2C bus number
         self.address = self.config["i2c_mapping"][device_name]["address"]  # I2C address of the device
 
-
-    def write(self, data: Optional[list[int] | int]):
+    def write(self, data: Union[str, list[int], int]):
         """
-        Writes data to the I2C device.
+        Writes data to the I2C device. Can handle strings, lists of ints, or single ints.
         """
-        # data : first is starting register
-        # After it is Sequence[int]
-        if isinstance(data, list):
-            # Writing a block of data
-            self.log.debug(f"WRITE : {data}")
+        if isinstance(data, str):
+            byte_data = [ord(c) for c in data]  # Convert string to list of ASCII values
+            byte_data.insert(0, 0)  # Optional: Dummy command register
+            self.bus.write_i2c_block_data(self.address, byte_data[0], byte_data[1:])
+            self.log.debug(f"WRITE STRING: {data}")
+        elif isinstance(data, list):
             self.bus.write_i2c_block_data(self.address, data[0], data[1:])
+            self.log.debug(f"WRITE LIST: {data}")
         else:
-            # Writing a single byte
-            self.log.debug(f"WRITE : {data}")
             self.bus.write_byte(self.address, data)
+            self.log.debug(f"WRITE BYTE: {data}")
+
         self.log.info(f"WRITE : Data written to device at address {self.address}: {data}")
 
     def read(self, num_bytes: int):
         """
-        Reads data from the I2C device.
+        Reads data from the I2C device and returns it as a string.
         """
-        data = self.bus.read_i2c_block_data(self.address, 0, num_bytes)
-        self.log.info(f"READ : Data read from device at address {self.address}: {data}")
-        return data
+        raw_data = self.bus.read_i2c_block_data(self.address, 0, num_bytes)
+        self.log.info(f"READ : Raw data from device at address {self.address}: {raw_data}")
 
-    def close(self):
-        """
-        Closes the I2C bus.
-        """
-        self.log.info("CLOSE : I2C bus closed")
-        self.bus.close()
+        # Convert received bytes to string, ignoring null bytes
+        return ''.join([chr(b) for b in raw_data if b != 0])
