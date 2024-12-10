@@ -1,10 +1,10 @@
 from smbus2 import SMBus
-from typing import Union
-
+from typing import  Union
 from utils.config import Config
 from utils.log import Log
 
 
+# test
 class I2CCommunication:
     def __init__(self, device_name: str):
         self.config = Config().get()
