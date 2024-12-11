@@ -4,14 +4,13 @@ from threading import Thread
 from modules.slam.position_tracker import PositionTracker
 from utils.config import Config
 
-
 class RealSimulation:
     def __init__(self):
-        self.config = Config.get()
+        self.config = Config().get()
         self.size = self.config["simulation"]["size"]
         run = self.config["simulation"]["run"]
-        self.robot_radius = self.config["dimensions"]["radius"]
-        self.positionTracker = PositionTracker.get()
+        self.robot_radius = self.config["dimension"]['robot']["radius"]
+        self.positionTracker = PositionTracker()
 
         if run:
             simulation_loop = Thread(target=self.run)
@@ -20,7 +19,7 @@ class RealSimulation:
     def run(self):
         pygame.init()
         screen = pygame.display.set_mode((self.size * 3 // 2, self.size))  # Use integer division
-        map_coupe = pygame.image.load("ressources/images/plateau_coupe.png")
+        map_coupe = pygame.image.load("../ressources/images/plateau_coupe.png")
         screen.blit(map_coupe, (0, 0))
 
         robot_surface = self.drawRobot()
@@ -32,32 +31,29 @@ class RealSimulation:
                 if event.type == pygame.QUIT:
                     running = False
 
-            # Get robot position and orientation from position tracker
-            x, y, w = self.positionTracker.getCurrentPosition()
-
-            # Rotate the robot surface according to the current orientation
+            x, y, w = (100, 100, 2) # self.positionTracker.getCurrentPosition()
             rotated_robot_surface = pygame.transform.rotate(robot_surface, w)
 
-            # Calculate the position to center the robot
             robot_rect = rotated_robot_surface.get_rect(center=(x, y))
 
-            # Redraw the background and the robot at the new position
-            screen.blit(map_coupe, (0, 0))  # Redraw the map to avoid leftover images
+            screen.blit(map_coupe, (0, 0))
             screen.blit(rotated_robot_surface, robot_rect.topleft)
 
-            pygame.display.flip()  # Update the display
-            pygame.time.Clock().tick(30)  # Limit the framerate to 30 FPS
+            pygame.display.flip()
+            pygame.time.Clock().tick(30)
 
         pygame.quit()
 
     def drawRobot(self):
-        height = (math.sqrt(3) / 2) * self.robot_radius  # Use self.robot_radius here
+        height = (math.sqrt(3)) * self.robot_radius
         width = self.robot_radius * 2
 
-        robot_surface = pygame.surface.Surface((width, int(height)))
+        # Create a surface with transparency support
+        robot_surface = pygame.Surface((width, int(height)), pygame.SRCALPHA)
 
+        # Transparent background is already set by default (RGBA = (0, 0, 0, 0))
         center_x = width / 2
-        center_y = height / 3
+        center_y = height / 2
 
         angle_offset = math.radians(30)
 
@@ -68,6 +64,10 @@ class RealSimulation:
             y = center_y + self.robot_radius * math.sin(angle)
             points.append((x, y))
 
-        pygame.draw.polygon(robot_surface, (255, 0, 0), points)
+        # Draw a filled polygon on the transparent surface
+        pygame.draw.polygon(robot_surface, (255, 0, 0, 255), points)  # RGBA format (255 = opaque red)
 
         return robot_surface
+
+
+rs = RealSimulation()

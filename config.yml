@@ -4,8 +4,8 @@ log:
   logger: {}
   level: "DEBUG"
 simulation:
-  run : True
-  size : 400
+  run: True
+  size: 400
 i2c_mapping:
   raspberry:
     address: 0x10
@@ -18,7 +18,7 @@ i2c_mapping:
     bus: 3
 dimension:
   robot:
-    radius : 0.3
+    radius: 30
   map:
-    width : 3000
-    height : 2000
+    width: 3000
+    height: 2000
