@@ -1,5 +1,5 @@
 from simple_pid import PID
-from modules.position_tracker.position_tracker import PositionTracker
+from modules.slam.position_tracker import PositionTracker
 from threading import Thread, Lock
 from utils.config import Config
 from utils.log import Log
@@ -40,7 +40,7 @@ class PositionController:
         self.lock = Lock()
         self.running = True
 
-        # Start controller loop
+        # Start navigation loop
         self.controllerLoop = Thread(target=self.run)
         self.controllerLoop.start()
 
