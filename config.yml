@@ -3,8 +3,9 @@ log:
   module: ["file", "stream", "journal"]
   logger: {}
   level: "DEBUG"
-run:
-  simulation: False
+simulation:
+  run : True
+  size : 400
 i2c_mapping:
   raspberry:
     address: 0x10
@@ -15,3 +16,9 @@ i2c_mapping:
   esp_steppers:
     address: 0x08
     bus: 3
+dimension:
+  robot:
+    radius : 0.3
+  map:
+    width : 3000
+    height : 2000
