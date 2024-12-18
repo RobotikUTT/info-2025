@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from modules.communication.speed_communication import SpeedCommunication
 import time
 from modules.communication.i2c_communication import I2CCommunication
