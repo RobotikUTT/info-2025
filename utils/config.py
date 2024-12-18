@@ -8,7 +8,7 @@ class Config:
             cls._instance = super(Config, cls).__new__(cls)
             try:
                 cls._instance.config = load_yml(
-                    "../config.yml"
+                    "config.yml"
                 )  # config.yml must be in the root folder of the project
             except FileNotFoundError as e:
                 print(

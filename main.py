@@ -1,14 +1,15 @@
 from modules.communication.speed_communication import SpeedCommunication
 import time
 from modules.communication.i2c_communication import I2CCommunication
+import math
+
 def main():
-    i2c_comm = I2CCommunication("esp_steppers")
+    speed_comm = SpeedCommunication()
+    x = 0
     while True:
-        i2c_comm.write("Hello world!")
+        x += 1
         time.sleep(0.1)
-        # SpeedCommunication.sendSpeedPolar(0.2, 0.2, 0.0)
-
-
+        speed_comm.sendSpeedCart(math.cos(x)*0.2, 0.0, 0.0)
 
 
 

@@ -1,7 +1,6 @@
 from i2c_communication import I2CCommunication
 from utils.log import Log
 
-
 class SpeedCommunication:
     def __init__(self):
         self.steppers_communication = I2CCommunication("esp_steppers")
@@ -12,5 +11,5 @@ class SpeedCommunication:
         self.steppers_communication.write(sendString)
 
     def sendSpeedCart(self, x, y, rot):
-        sendString = f"x: {x:.6f}, y: {y:.6f}, r: {rot:.6f}"
+        sendString = f"x: {x:.3f}, y: {y:.3f}, r: {rot:.3f}"
         self.steppers_communication.write(sendString)
