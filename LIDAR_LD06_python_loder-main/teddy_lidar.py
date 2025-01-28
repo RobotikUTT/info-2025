@@ -1,13 +1,13 @@
-from threading import Thread
+import pygame
+import time
+from threading import Thread, Lock
 from serial import Serial
 from math import radians, cos, sin, pi
 from typing import Tuple, List
-import time
-import pygame
 
 PACKET_SIZE = 47
 
-# ---------------------- DEFINE CYCLIC REDUNDANCY CHACK TABLE ----------------------
+# ---------------------- DEFINE CYCLIC REDUNDANCY CHECK TABLE ----------------------
 
 CRC_TABLE = b"\x00\x4d\x9a\xd7\x79\x34\xe3\xae\xf2\xbf\x68\x25\x8b\xc6\x11\x5c" \
             b"\xa9\xe4\x33\x7e\xd0\x9d\x4a\x07\x5b\x16\xc1\x8c\x22\x6f\xb8\xf5" \
@@ -41,15 +41,16 @@ class PointData:
         return f'd: {self.distance}, a: {self.angle}, x: {self.x}, y: {self.y}'
 
 class LidarService(Thread):
-    def __init__(self, position_service = None):
+    def __init__(self, position_service=None):
         super().__init__()
         self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
-        self.values : List[PointData] = []
+        self.values: List[PointData] = []
+        self.lock = Lock()
 
     def run(self):
         dataList = []
-        print("lidar ... ", "ready to operate")
+        print("Lidar ... ready to operate")
         while True:
             data = self.serial.read(250)
             self.serial.reset_input_buffer()
@@ -62,22 +63,14 @@ class LidarService(Thread):
                     dataList = [0x54, 0x2c]
                     for i in range(PACKET_SIZE - 2):
                         dataList.append(next(it))
-                    """expected_crc = dataList[-1]
-                    crc = 0
-                    for b in dataList[:-1]:
-                        crc = CRC_TABLE[(crc ^ b) & 0xff]
-                    if expected_crc != crc:
-                        print("CRC does not match")
-                        continue"""
                     robot_position = (0, 0)
                     robot_angle = 0
                     now = time.time()
                     formatted = self.sortData(dataList)
-                    self.values.clear()
-                    for distance, angle, confidence in zip(*formatted):
-                        self.values.append(PointData(radians(-angle % 360), distance, robot_position, robot_angle, now))
-                    """for v in values:
-                        print(v)"""
+                    with self.lock:  # Lock access to the shared values list
+                        self.values.clear()
+                        for distance, angle, confidence in zip(*formatted):
+                            self.values.append(PointData(radians(-angle % 360), distance, robot_position, robot_angle, now))
             except StopIteration:
                 pass
 
@@ -95,13 +88,14 @@ class LidarService(Thread):
         confidence_list = []
 
         for i in range(0, 12):
-            distance_list.append(dataList[6 + (i * 3) + 1] << 8 | dataList[6 + (i * 3)])
+            distance_list.append(dataList[6 + (i * 3) + 1] << 8 | dataList[6 + (i * 3)] )
             confidence_list.append(dataList[6 + (i * 3) + 2])
             angle_list.append(step * i + startAngle)
         return distance_list, angle_list, confidence_list
 
     def getValues(self):
-        return self.values
+        with self.lock:  # Lock access to the shared values list
+            return self.values
 
 if __name__ == "__main__":
     ld = LidarService()
@@ -119,11 +113,9 @@ if __name__ == "__main__":
 
         values = ld.getValues()
         for value in values:
-            pygame.draw.line(screen, 0xffffff, origin, (value.x, value.y))
+            pygame.draw.line(screen, (255, 255, 255), origin, (value.x, value.y))
 
         pygame.display.flip()
-
-
 
     # Main loop
     running = True
@@ -133,9 +125,6 @@ if __name__ == "__main__":
                 running = False
                 break
         draw()
-
         clock.tick(10)
 
-
-
-
+    pygame.quit()
