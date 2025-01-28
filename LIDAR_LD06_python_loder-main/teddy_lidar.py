@@ -27,21 +27,14 @@ CRC_TABLE = b"\x00\x4d\x9a\xd7\x79\x34\xe3\xae\xf2\xbf\x68\x25\x8b\xc6\x11\x5c" 
 
 class PointData:
     def __init__(self, angle, distance, robot_position: Tuple[int, int], robot_angle, measured_at=0):
-        # The try except will always crash (if it does not there is a problem ^^)
-        # It is used for auto-completion in IDEs
-        try:
-            self.angle = angle
-            self.distance = distance
-            self.robot_position = robot_position
-            self.robot_angle = robot_angle
-            self.x = cos(robot_angle + angle) * distance + robot_position[0]
-            self.y = sin(robot_angle + angle) * distance + robot_position[1]
-            self.absolute_angle = (robot_angle + angle) % (2 * pi)
-            self.measured_at = measured_at
-        except TypeError:
-            pass
-        else:
-            print("PointData is not immutable")
+        self.angle = angle
+        self.distance = distance
+        self.robot_position = robot_position
+        self.robot_angle = robot_angle
+        self.x = cos(robot_angle + angle) * distance + robot_position[0]
+        self.y = sin(robot_angle + angle) * distance + robot_position[1]
+        self.absolute_angle = (robot_angle + angle) % (2 * pi)
+        self.measured_at = measured_at
 
     def __str__(self):
         return f'd: {self.distance}, a: {self.angle}, x: {self.x}, y: {self.y}'
