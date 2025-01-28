@@ -1,12 +1,13 @@
+import logging
+
 from smbus2 import SMBus
 
 from utils.config import I2cConnectionSettings
-from utils.log import Log
 
 
 class I2CCommunication:
     def __init__(self, config: I2cConnectionSettings):
-        self.log = Log("I2CCommunication")
+        self.log = logging.getLogger("i2c")
         self.bus = SMBus(config.bus)  # I2C bus number
         self.address = config.address  # I2C address of the device
 

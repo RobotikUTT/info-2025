@@ -1,6 +1,7 @@
+import logging
+
 from i2c_communication import I2CCommunication
 from utils.config import Config
-from utils.log import Log
 
 
 class SpeedCommunication:
@@ -8,7 +9,7 @@ class SpeedCommunication:
         self.steppers_communication = I2CCommunication(
             Config().i2c_mapping.esp_steppers
         )
-        self.log = Log("I2CCommunication")
+        self.log = logging.getLogger("i2c")
 
     def sendSpeedPolar(self, r, angle, rot):
         sendString = f"R: {r:.6f}, w: {angle:.6f}, r: {rot:.6f}"

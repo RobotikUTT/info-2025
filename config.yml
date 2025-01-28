@@ -1,8 +1,7 @@
 log:
-  path: "./debug.log"
-  module: ["file", "stream", "journal"]
-  logger: {}
-  level: "DEBUG"
+  - name: i2c
+    path: "log/debug.log"
+    level: "DEBUG"
 run:
   simulation: False
 i2c_mapping:

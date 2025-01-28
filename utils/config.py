@@ -2,13 +2,18 @@ from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, PositiveInt
-from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, YamlConfigSettingsSource
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict,
+    PydanticBaseSettingsSource,
+    YamlConfigSettingsSource,
+)
 
 
 class LoggerConfig(BaseModel):
+    name: str
     path: Path
-    module: list[str]
-    level: Literal["DEBUG", "INFO", "WARNING", "ERROR"]
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "FATAL", "CRITICAL"] = "INFO"
 
 
 class RunConfig(BaseModel):
@@ -41,7 +46,7 @@ class Config(BaseSettings):
 
     model_config = SettingsConfigDict(yaml_file="config.yml")
 
-    log: LoggerConfig
+    loggers: list[LoggerConfig]
     run: RunConfig
     i2c_mapping: I2cMapping
 
