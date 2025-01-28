@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
         values = ld.getValues()
         for value in values:
-            pygame.draw.line(screen, (255, 255, 255), origin, (value.x, value.y))
+            pygame.draw.line(screen, (0, 0, 0), origin, (value.x, value.y))
 
         pygame.display.flip()
 
