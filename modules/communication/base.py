@@ -5,16 +5,14 @@ from smbus2 import SMBus
 from utils.config import I2cConnectionSettings
 
 
-class I2CCommunication:
+class I2CCommunicationBase:
     def __init__(self, config: I2cConnectionSettings):
         self.log = logging.getLogger("i2c")
         self.bus = SMBus(config.bus)  # I2C bus number
         self.address = config.address  # I2C address of the device
 
     def write(self, data: str | list[int] | int):
-        """
-        Writes data to the I2C device. Can handle strings, lists of ints, or single ints.
-        """
+        """Writes data to the I2C device."""
         if isinstance(data, str):
             byte_data = [ord(c) for c in data]  # Convert string to list of ASCII values
             byte_data.insert(0, 0)  # Optional: Dummy command register
@@ -32,9 +30,7 @@ class I2CCommunication:
         )
 
     def read(self, num_bytes: int):
-        """
-        Reads data from the I2C device and returns it as a string.
-        """
+        """Reads data from the I2C device and returns it as a string."""
         raw_data = self.bus.read_i2c_block_data(self.address, 0, num_bytes)
         self.log.info(
             f"READ : Raw data from device at address {self.address}: {raw_data}"

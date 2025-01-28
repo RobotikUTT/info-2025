@@ -1,20 +1,9 @@
-import logging
-
-from i2c_communication import I2CCommunication
-from utils.config import Config
+from .base import I2CCommunicationBase
 
 
-class SpeedCommunication:
-    def __init__(self):
-        self.steppers_communication = I2CCommunication(
-            Config().i2c_mapping.esp_steppers
-        )
-        self.log = logging.getLogger("i2c")
+class SpeedCommunication(I2CCommunicationBase):
+    def send_speed_polar(self, r, angle, rot):
+        self.write(f"R: {r:.6f}, w: {angle:.6f}, r: {rot:.6f}")
 
-    def sendSpeedPolar(self, r, angle, rot):
-        sendString = f"R: {r:.6f}, w: {angle:.6f}, r: {rot:.6f}"
-        self.steppers_communication.write(sendString)
-
-    def sendSpeedCart(self, x, y, rot):
-        sendString = f"x: {x:.6f}, y: {y:.6f}, r: {rot:.6f}"
-        self.steppers_communication.write(sendString)
+    def send_speed_cart(self, x, y, rot):
+        self.write(f"x: {x:.6f}, y: {y:.6f}, r: {rot:.6f}")
