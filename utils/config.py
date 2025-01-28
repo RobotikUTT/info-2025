@@ -1,40 +1,73 @@
-from utils.tools import load_yml
-from sys import exit
+from pathlib import Path
+from typing import Literal
 
-"""
-Way to use it in the project :
-
-from utils.config import Config
-class SomeClass:
-    def __init__(self):
-        self.config = Config().get()
-
-"""
+from pydantic import BaseModel, PositiveInt
+from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, YamlConfigSettingsSource
 
 
-class Config:
-    _instance = None
-
-    def __new__(cls, config=None):
-        if cls._instance is None:
-            cls._instance = super(Config, cls).__new__(cls)
-            try:
-                cls._instance.config = load_yml(
-                    "config.yml"
-                )  # config.yml must be in the root folder of the project
-            except FileNotFoundError as e:
-                print(
-                    f"Error: {e}\nEnsure 'config.yml' is in the root folder of the project."
-                )
-                exit(1)
-
-        return cls._instance
-
-    def get(self):
-        return self.config
+class LoggerConfig(BaseModel):
+    path: Path
+    module: list[str]
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
-if __name__ == "__main__":
-    # Initialize once
-    config = {"key": "value"}
-    Config(config)  # Sets config for the singleton
+class RunConfig(BaseModel):
+    simulation: bool
+
+
+class I2cConnectionSettings(BaseModel):
+    address: PositiveInt
+    bus: PositiveInt
+
+
+class I2cMapping(BaseModel):
+    raspberry: I2cConnectionSettings
+    esp_sensors: I2cConnectionSettings
+    esp_steppers: I2cConnectionSettings
+
+
+class Config(BaseSettings):
+    """Project Configuration.
+
+    Example:
+        ```python
+        from utils.config import Config
+
+        class Foo:
+            def __init__(self):
+                self.config = Config()
+        ```
+    """
+
+    model_config = SettingsConfigDict(yaml_file="config.yml")
+
+    log: LoggerConfig
+    run: RunConfig
+    i2c_mapping: I2cMapping
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """Define the priority for different sources of configuration.
+
+        The configuration is loaded from the following sources
+        (in descending order of priority) :
+
+            1. Arguments passed to the Settings class initialiser.
+            2. Environment variables
+            3. Variables loaded from the `.env` file.
+            4. Variables loaded from the `config.yml` file
+            5. The default field values for the Settings model.
+        """
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            YamlConfigSettingsSource(settings_cls),
+        )

@@ -4,5 +4,5 @@ from utils.log import Log
 
 class Template:
     def __init__(self):
-        self.config = Config().get()
+        self.config = Config()
         self.log = Log("Template")

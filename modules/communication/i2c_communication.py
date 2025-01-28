@@ -1,22 +1,16 @@
 from smbus2 import SMBus
-from typing import Union
 
-from utils.config import Config
+from utils.config import I2cConnectionSettings
 from utils.log import Log
 
 
 class I2CCommunication:
-    def __init__(self, device_name: str):
-        self.config = Config().get()
+    def __init__(self, config: I2cConnectionSettings):
         self.log = Log("I2CCommunication")
-        self.bus = SMBus(
-            self.config["i2c_mapping"][device_name]["bus"]
-        )  # I2C bus number
-        self.address = self.config["i2c_mapping"][device_name][
-            "address"
-        ]  # I2C address of the device
+        self.bus = SMBus(config.bus)  # I2C bus number
+        self.address = config.address  # I2C address of the device
 
-    def write(self, data: Union[str, list[int], int]):
+    def write(self, data: str | list[int] | int):
         """
         Writes data to the I2C device. Can handle strings, lists of ints, or single ints.
         """
