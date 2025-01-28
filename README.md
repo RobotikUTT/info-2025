@@ -49,6 +49,13 @@ uv run main.py
 
 ### Développement
 
+Pour formatter et linter le code :
+
+```bash
+uv run ruff check
+uv run ruff format
+```
+
 ##### Modules
 
 Chaque classe de module doit être crée à partir de `template.py` afin d'initialiser le logger et la config.

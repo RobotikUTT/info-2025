@@ -1,13 +1,20 @@
 from smbus2 import SMBus
-from typing import Optional, Union
+from typing import Union
+
+from utils.config import Config
+from utils.log import Log
 
 
 class I2CCommunication:
     def __init__(self, device_name: str):
         self.config = Config().get()
         self.log = Log("I2CCommunication")
-        self.bus = SMBus(self.config["i2c_mapping"][device_name]["bus"])  # I2C bus number
-        self.address = self.config["i2c_mapping"][device_name]["address"]  # I2C address of the device
+        self.bus = SMBus(
+            self.config["i2c_mapping"][device_name]["bus"]
+        )  # I2C bus number
+        self.address = self.config["i2c_mapping"][device_name][
+            "address"
+        ]  # I2C address of the device
 
     def write(self, data: Union[str, list[int], int]):
         """
@@ -25,14 +32,18 @@ class I2CCommunication:
             self.bus.write_byte(self.address, data)
             self.log.debug(f"WRITE BYTE: {data}")
 
-        self.log.info(f"WRITE : Data written to device at address {self.address}: {data}")
+        self.log.info(
+            f"WRITE : Data written to device at address {self.address}: {data}"
+        )
 
     def read(self, num_bytes: int):
         """
         Reads data from the I2C device and returns it as a string.
         """
         raw_data = self.bus.read_i2c_block_data(self.address, 0, num_bytes)
-        self.log.info(f"READ : Raw data from device at address {self.address}: {raw_data}")
+        self.log.info(
+            f"READ : Raw data from device at address {self.address}: {raw_data}"
+        )
 
         # Convert received bytes to string, ignoring null bytes
-        return ''.join([chr(b) for b in raw_data if b != 0])
+        return "".join([chr(b) for b in raw_data if b != 0])
