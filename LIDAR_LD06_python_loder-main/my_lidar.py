@@ -42,7 +42,7 @@ while running:
         vprint(f"Start Angle: {start_angle}°")
 
         points = []
-        clothest = 0
+        clothest = 100000000
         for _ in range(data_length):
             point_bytes = ser.read(3)
             distance, intensity = struct.unpack('<HB', point_bytes)  # 2 bytes for distance, 1 byte for intensity
