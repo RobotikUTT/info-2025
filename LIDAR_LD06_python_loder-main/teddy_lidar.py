@@ -1,8 +1,9 @@
 from threading import Thread
 from serial import Serial
 from math import radians, cos, sin, pi
-from typing import Tuple
+from typing import Tuple, List
 import time
+import pygame
 
 PACKET_SIZE = 47
 
@@ -44,6 +45,7 @@ class LidarService(Thread):
         super().__init__()
         self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
+        self.values : List[PointData] = []
 
     def run(self):
         dataList = []
@@ -60,23 +62,22 @@ class LidarService(Thread):
                     dataList = [0x54, 0x2c]
                     for i in range(PACKET_SIZE - 2):
                         dataList.append(next(it))
-                    expected_crc = dataList[-1]
+                    """expected_crc = dataList[-1]
                     crc = 0
                     for b in dataList[:-1]:
                         crc = CRC_TABLE[(crc ^ b) & 0xff]
                     if expected_crc != crc:
                         print("CRC does not match")
-                        continue
+                        continue"""
                     robot_position = (0, 0)
                     robot_angle = 0
                     now = time.time()
                     formatted = self.sortData(dataList)
-                    values = []
+                    self.values.clear()
                     for distance, angle, confidence in zip(*formatted):
-                        values.append(PointData(radians(-angle % 360), distance, robot_position, robot_angle, now))
-                    for v in values:
-                        print(v)
-                    # print("found one !")
+                        self.values.append(PointData(radians(-angle % 360), distance, robot_position, robot_angle, now))
+                    """for v in values:
+                        print(v)"""
             except StopIteration:
                 pass
 
@@ -99,6 +100,42 @@ class LidarService(Thread):
             angle_list.append(step * i + startAngle)
         return distance_list, angle_list, confidence_list
 
+    def getValues(self):
+        return self.values
+
 if __name__ == "__main__":
-    LidarService().start()
+    ld = LidarService()
+    ld.start()
+    # Initialize Pygame
+    pygame.init()
+    size = 600
+    screen = pygame.display.set_mode((size, size))
+    origin = (size // 2, size // 2)
+    scale = 2  # Adjust scale for distance visualization (assuming distance in mm)
+    clock = pygame.time.Clock()
+
+    def draw():
+        screen.fill((255, 255, 255))
+
+        values = ld.getValues()
+        for value in values:
+            pygame.draw.line(screen, 0xffffff, origin, (value.x, value.y))
+
+        pygame.display.flip()
+
+
+
+    # Main loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                break
+        draw()
+
+        clock.tick(10)
+
+
+
 
