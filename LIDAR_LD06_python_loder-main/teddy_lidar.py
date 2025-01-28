@@ -47,7 +47,7 @@ class PointData:
         return f'd: {self.distance}, a: {self.angle}, x: {self.x}, y: {self.y}'
 
 class LidarService(Thread):
-    def __init__(self, position_service):
+    def __init__(self, position_service = None):
         super().__init__()
         self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
@@ -56,7 +56,6 @@ class LidarService(Thread):
         dataList = []
         print("lidar ... ", "ready to operate")
         while True:
-            # print(self.position_service.x, self.position_service.y)
             data = self.serial.read(250)
             self.serial.reset_input_buffer()
             it = iter(data)
@@ -75,8 +74,8 @@ class LidarService(Thread):
                     if expected_crc != crc:
                         print("CRC does not match")
                         continue
-                    robot_position = self.position_service.get_position()
-                    robot_angle = self.position_service.get_angle()
+                    robot_position = (0, 0)
+                    robot_angle = 0
                     now = time.time()
                     formatted = self.sortData(dataList)
                     values = []
@@ -106,4 +105,7 @@ class LidarService(Thread):
             confidence_list.append(dataList[6 + (i * 3) + 2])
             angle_list.append(step * i + startAngle)
         return distance_list, angle_list, confidence_list
+
+if __name__ == "__main__":
+    LidarService().start()
 
