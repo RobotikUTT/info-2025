@@ -32,11 +32,20 @@ info-2025/
 
 ### Installation
 
-1) Install necessary requirements : `sudo apt install build-essential libsystemd-dev`
-2) Set up the config.yml file
-3) Create a venv `python3 -m venv venv` and activate it `source venv/bin/activate`
-4) Install requirements `pip install -r requirements.txt`
-5) Run the `main.py`
+Install necessary requirements : 
+```bash
+sudo apt install build-essential libsystemd-dev \
+  && curl -LsSf https://astral.sh/uv/install.sh | sh \
+  && uv sync
+```
+
+Set up the config.yml file.
+
+Then run :
+
+```bash
+uv run main.py
+```
 
 ### Développement
 
