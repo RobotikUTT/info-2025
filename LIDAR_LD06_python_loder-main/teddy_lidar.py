@@ -81,7 +81,7 @@ class LidarService(Thread):
                     values = []
                     for distance, angle, confidence in zip(*formatted):
                         values.append(PointData(radians(-angle % 360), distance, robot_position, robot_angle, now))
-                    for v in range(values):
+                    for v in values:
                         print(v)
                     # print("found one !")
             except StopIteration:
