@@ -13,11 +13,13 @@ def load_yml(filepath: str) -> dict:
         dict: The contents of the YAML file as a dictionary.
     """
     try:
-        with open(filepath, 'r') as file:
+        with open(filepath, "r") as file:
             data = safe_load(file)
         return data
     except FileNotFoundError:
-        raise FileNotFoundError(f"The file '{filepath}' was not found. Please check the path and try again.")
+        raise FileNotFoundError(
+            f"The file '{filepath}' was not found. Please check the path and try again."
+        )
 
 
 def filename_from_path(path: str) -> str:

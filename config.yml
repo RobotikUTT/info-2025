@@ -1,6 +1,6 @@
 log:
   path: "./debug.log"
-  mode: ["file", "stream", "journal"]
+  module: ["file", "stream", "journal"]
   logger: {}
   level: "DEBUG"
 run:
