@@ -1,31 +1,60 @@
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from math import cos, sin
-import pygame
 from teddy_lidar_revisited import LidarService
 
 class LidarVisualizer:
     def __init__(self):
-        # Initialize Pygame
-        pygame.init()
-        self.size = 600
-        self.screen = pygame.display.set_mode((self.size, self.size))
-        self.origin = (self.size // 2, self.size // 2)
+        self.fig, self.ax = plt.subplots()
+        self.ax.set_xlim(-300, 300)
+        self.ax.set_ylim(-300, 300)
+        self.line, = self.ax.plot([], [], 'bo')
+        self.latest_data = []  # Store the latest data for the animation
 
     def update(self, values):
-        self.screen.fill((0, 0, 0))
-        for value in values:
-            end_x = self.origin[0] + cos(value.absolute_angle) * value.distance / 10
-            end_y = self.origin[1] + sin(value.absolute_angle) * value.distance / 10
-            pygame.draw.line(self.screen, (255, 255, 255), self.origin, (end_x, end_y))
+        # Update the latest data
+        self.latest_data += values
 
-        pygame.display.flip()
+    def animate(self, frame):
+        # Ensure that the data is consistent
+        if self.latest_data:
+            x_data = [cos(value.absolute_angle) * value.distance / 10 for value in self.latest_data]
+            y_data = [sin(value.absolute_angle) * value.distance / 10 for value in self.latest_data]
+            
+            # Check for shape mismatch
+            if len(x_data) == len(y_data):
+                self.line.set_data(x_data, y_data)
+            else:
+                print("Data mismatch: x_data and y_data lengths do not match.")
+                return self.line,  # Return the line without updating if there is a mismatch
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit(0)
+        return self.line,  # Return the line object to update it in FuncAnimation
 
-
-lv = LidarVisualizer()
-ld = LidarService()
-ld.observers.append(lv)
-ld.start()
+    def start(self):
+        # Set up the animation function to periodically update the plot
+        ani = FuncAnimation(self.fig, self.animate, blit=True, interval=100)
+        plt.show()
+        
+class LidarPrinter:
+    def update(self, points):
+        for point in points:
+            print(f"Point: {point.distance}")
+            
+class DetectionService:
+    def __init(self, threshold):
+        self.threshold = threshold
+    def update(self, points):
+        treat_dist = 0
+        for point in points:
+            if point.distance < self.threshold:
+                treat_dist += 1
+        if treat_dist > 1:
+            print(f"To close")
+        
+if __name__ == "__main__":
+    lv = DetectionService(10)
+    ls = LidarService()
+    ls.observers.append(lv)
+    
+    # Start the Lidar service (data collection)
+    ls.start()
