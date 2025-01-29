@@ -41,7 +41,7 @@ class LidarPrinter:
             print(f"Point: {point.distance}")
             
 class DetectionService:
-    def __init(self, threshold):
+    def __init__(self, threshold):
         self.threshold = threshold
     def update(self, points):
         treat_dist = 0
