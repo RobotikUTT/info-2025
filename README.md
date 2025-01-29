@@ -32,16 +32,14 @@ info-2025/
 
 ### Installation
 
-Install necessary requirements : 
+Installez les dépendances requises :
 ```bash
 sudo apt install build-essential libsystemd-dev \
   && curl -LsSf https://astral.sh/uv/install.sh | sh \
   && uv sync
 ```
 
-Set up the config.yml file.
-
-Then run :
+Puis lancez le programme :
 
 ```bash
 uv run main.py

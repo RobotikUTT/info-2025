@@ -1,8 +1,10 @@
-#!/usr/bin/env python3
+from utils.config import Config
+from utils.log import setup_logging
 
 
 def main():
-    pass
+    settings = Config()
+    setup_logging(settings.loggers)
 
 
 if __name__ == "__main__":
