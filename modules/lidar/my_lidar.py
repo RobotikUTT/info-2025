@@ -1,3 +1,5 @@
+import time
+
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from math import cos, sin
@@ -43,13 +45,16 @@ class LidarPrinter:
 class DetectionService:
     def __init__(self, threshold):
         self.threshold = threshold
+        self.stop = False
+        self.stop_time = 0
     def update(self, points):
-        treat_dist = 0
-        for point in points:
-            if point.distance < self.threshold:
-                treat_dist += 1
-        if treat_dist > 1:
-            print(f"To close")
+        treat_dist = sum(1 for point in points if point.distance < self.threshold)
+
+        if self.stop and time.time() - self.stop_time > 3:
+            self.stop = False  # Resume movement after 4 seconds
+        elif not self.stop and treat_dist > 1:
+            self.stop_time = time.time()
+            self.stop = True  # Stop if more than 1 point is too close
         
 if __name__ == "__main__":
     lv = DetectionService(10)

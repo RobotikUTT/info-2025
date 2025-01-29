@@ -1,10 +1,12 @@
 from modules.communication.speed_communication import SpeedCommunication
 import time
-from modules.communication.i2c_communication import I2CCommunication
 from math import cos, sin, pi
+from modules.lidar.teddy_lidar_revisited import LidarService, DetectionService
 
 def main():
-    speed_comm = SpeedCommunication()
+    lidar_service = LidarService()
+    detection_service = DetectionService(30)
+    speed_comm = SpeedCommunication(detection_service)
     rotation_speed = 0.1
     angle = 0
     radius = 4
