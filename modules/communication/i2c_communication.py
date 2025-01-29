@@ -1,5 +1,5 @@
 from smbus2 import SMBus
-from typing import  Union
+from typing import Union
 from utils.config import Config
 from utils.log import Log
 

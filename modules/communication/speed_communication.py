@@ -1,4 +1,4 @@
-from i2c_communication import I2CCommunication
+from modules.communication.i2c_communication import I2CCommunication
 from utils.log import Log
 
 class SpeedCommunication:
