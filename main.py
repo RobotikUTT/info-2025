@@ -6,6 +6,7 @@ from modules.lidar.teddy_lidar_revisited import LidarService, DetectionService
 def main():
     lidar_service = LidarService()
     detection_service = DetectionService(30)
+    lidar_service.observers.append(detection_service)
     speed_comm = SpeedCommunication(detection_service)
     rotation_speed = 0.1
     angle = 0
