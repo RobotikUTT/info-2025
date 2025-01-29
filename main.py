@@ -7,7 +7,7 @@ def main():
     speed_comm = SpeedCommunication()
     rotation_speed = 0.03
     angle = 0
-    radius = 10
+    radius = 4
     while True:
         angle = (angle + rotation_speed) % (2 * pi)
         p_x = cos(angle) * radius
