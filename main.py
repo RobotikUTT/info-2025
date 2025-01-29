@@ -5,7 +5,7 @@ from math import cos, sin, pi
 
 def main():
     speed_comm = SpeedCommunication()
-    rotation_speed = 0.03
+    rotation_speed = 0.1
     angle = 0
     radius = 4
     while True:
