@@ -5,7 +5,7 @@ from modules.lidar.teddy_lidar_revisited import LidarService, DetectionService
 
 def main():
     lidar_service = LidarService()
-    detection_service = DetectionService(30)
+    detection_service = DetectionService(10)
     lidar_service.observers.append(detection_service)
     speed_comm = SpeedCommunication(detection_service)
     rotation_speed = 0.1
@@ -23,7 +23,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    lidar_service = LidarService()
-    lidar_service.start()
-    lidar_service.join()
+    main()
