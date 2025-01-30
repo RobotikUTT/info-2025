@@ -49,6 +49,7 @@ class LidarService(Thread):
                     formatted = self.sortData(dataList)
                     for i, distance, angle, confidence in zip(range(12), *formatted):
                         self.values[i] = (PointData(radians(-angle % 360), distance, robot_position, robot_angle, now))
+                        print(self.values[i])
                     for observer in self.observers:
                         observer.update(self.values.copy())
 

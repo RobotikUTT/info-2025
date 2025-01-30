@@ -23,4 +23,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    lidar_service = LidarService()
