@@ -55,7 +55,7 @@ class DetectionService:
         treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
         if self.stop and time.time() - self.stop_time > 1:
             self.stop = False
-        elif treat_dist > 20:
+        if treat_dist > 20:
             self.stop_time = time.time()
             self.stop = True
             
