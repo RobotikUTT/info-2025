@@ -54,10 +54,10 @@ class DetectionService:
     def update(self, points):
         treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
         if self.stop and time.time() - self.stop_time > 1:
-            self.stop = False  # Resume movement after 3 seconds
-        elif not self.stop and treat_dist > 20:
+            self.stop = False
+        elif treat_dist > 20:
             self.stop_time = time.time()
-            self.stop = True  # Stop if more than 1 point is too close
+            self.stop = True
             
 class PrinterService:
     def update(self, points):
