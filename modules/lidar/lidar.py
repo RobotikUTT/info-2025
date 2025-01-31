@@ -24,7 +24,7 @@ class LidarService(Thread):
         super().__init__()
         self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
-        self.values = list(PointData)
+        self.values = []
         self.observers = []
 
     def run(self):
@@ -41,7 +41,7 @@ class LidarService(Thread):
                 self.values.append(PointData(distance, angle, (0, 0), 0, current_time))
 
             for observer in self.observers:
-                observer.update(self.values.copy())
+                observer.update(self.values)
 
 
 class DetectionService:

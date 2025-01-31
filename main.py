@@ -1,12 +1,13 @@
 from modules.communication.speed_communication import SpeedCommunication
 import time
 from math import cos, sin, pi
-from modules.lidar.teddy_lidar_revisited import LidarService, DetectionService
+from modules.lidar.lidar import LidarService, DetectionService
 
 def main():
     lidar_service = LidarService()
     lidar_service.start()
-    detection_service = DetectionService(10)
+    detection_service = DetectionService(100)
+    lidar_service.join()
 
     """detection_service = DetectionService(30)
     lidar_service.observers.append(detection_service)
