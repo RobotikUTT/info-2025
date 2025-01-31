@@ -40,14 +40,36 @@ CRC_TABLE = b'\x00\x4d\x9a\xd7\x79\x34\xe3\xae\xf2\xbf\x68\x25\x8b\xc6\x11\x5c' 
 
 def calc_crc(frame: bytes) -> bool:
     crc = 0
-    for byte in frame:
+    for byte in frame[:-1]:  # Ignore last byte (actual CRC from frame)
         crc = CRC_TABLE[crc ^ byte]
-    return crc == 0
+    return crc == frame[-1]  # Compare computed CRC with received CRC
+    
+def calc_crc_debug(frame: bytes) -> bool:
+    crc = 0
+    print(f"Frame: {frame.hex()}")  # Print full frame in hex for debugging
+    
+    for i, byte in enumerate(frame[:-1]):  # Ignore last byte (actual CRC from frame)
+        prev_crc = crc
+        crc = CRC_TABLE[crc ^ byte]
+        print(f"Step {i}: Byte = {byte:02X}, Prev CRC = {prev_crc:02X}, New CRC = {crc:02X}")
+    
+    expected_crc = frame[-1]
+    print(f"Computed CRC: {crc:02X}, Expected CRC: {expected_crc:02X}, Match: {crc == expected_crc}")
+    
+    return crc == expected_crc  # Compare computed CRC with received CRC
 
 
-def parse_data(data: bytes) -> list[tuple[int, float]]:     # tuple (distance, angle(degres))
+
+def parse_data(data: bytes) -> list[tuple[int, float]]:  # (distance, angle in degrees)
     parsed_points = []
-    data = data[data.index(0x54):]
+    
+    header_index = data.find(0x54)  # Safer than .index()
+    if header_index == -1:
+        print("No valid frame start found")
+        return []
+
+    data = data[header_index:]
+
     while len(data) >= 47:
         frame = data[:47]
         try:
@@ -55,21 +77,31 @@ def parse_data(data: bytes) -> list[tuple[int, float]]:     # tuple (distance, a
                 '<BBHH' + ('HB' * 12) + 'HHB',
                 frame
             )
-            if not calc_crc(frame):     # Cas typique: frame coupé au début
-                print("CRC error, skipping frame")
-                data = data[data.index(0x54, start=1):]
+
+            if not calc_crc(frame):  # Typical case: cut frame
+                # print("CRC error, skipping frame")
+                next_header = data[1:].find(0x54) + 1  # Find next header
+                if next_header > 0:
+                    data = data[next_header:]
+                else:
+                    return parsed_points  # No more valid frames
                 continue
+
             start_angle /= 100
             end_angle /= 100
             angle_step = (end_angle - start_angle) / 11
+
             for i in range(12):
-                rho = points[i << 1]
+                rho = points[i << 1]  # Extract distance
                 angle = start_angle + i * angle_step
-                point = (rho, angle)
-                parsed_points.append(point)
+                parsed_points.append((rho, angle))
+
         except struct.error as e:
-            print("Error parsing data:", e)
-        data = data[47:]
+            print(f"Error parsing data: {e}, skipping {len(frame)} bytes")
+            data = data[1:]  # Skip 1 byte instead of 47 (safe fallback)
+
+        else:
+            data = data[47:]  # Move to next frame
     return parsed_points
 
 

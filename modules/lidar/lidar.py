@@ -40,7 +40,7 @@ class LidarService(Thread):
             self.values.clear()
             current_time = time.time()
             for distance, angle in parsed_data:
-                self.values.append(PointData(distance, angle, (0, 0), 0, current_time))
+                self.values.append(PointData(angle, distance, (0, 0), 0, current_time))
 
             for observer in self.observers:
                 observer.update(self.values)
@@ -52,10 +52,14 @@ class DetectionService:
         self.stop = False
         self.stop_time = 0
     def update(self, points):
-        treat_dist = sum(1 for point in points if point.distance < self.threshold)
-
-        if self.stop and time.time() - self.stop_time > 3:
+        treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
+        if self.stop and time.time() - self.stop_time > 1:
             self.stop = False  # Resume movement after 3 seconds
-        elif not self.stop and treat_dist > 1:
+        elif not self.stop and treat_dist > 20:
             self.stop_time = time.time()
             self.stop = True  # Stop if more than 1 point is too close
+            
+class PrinterService:
+    def update(self, points):
+        for point in points:
+            print(point)
