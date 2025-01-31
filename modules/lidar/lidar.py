@@ -32,8 +32,8 @@ class LidarService(Thread):
     def run(self):
         print("Lidar ... ready to operate")
         while True:
-            data = self.serial.read(250)
             self.serial.reset_input_buffer()
+            data = self.serial.read(500)
 
             parsed_data = parse_data(data)
 
