@@ -4,7 +4,7 @@ from modules.communication.speed_communication import SpeedCommunication
 from pathlib import Path
 
 class PathFollower(SpeedCommunication):
-    def __init__(self, detect_service, filename="ressources/path/path.json", scale=1):
+    def __init__(self, detect_service, filename="ressources/path/path.json", scale=0.03):
         path_obj = Path(filename)
         filename = path_obj.resolve()
 
@@ -31,6 +31,7 @@ class PathFollower(SpeedCommunication):
 
     def start(self):
         """Follow the path by sending speed commands."""
-        for x, y in self.speeds:
-            time.sleep(0.1)
-            self.sendSpeedCart(x, y, 0)
+        while True:
+            for x, y in self.speeds:
+                time.sleep(0.05)
+                self.sendSpeedCart(x, y, 0)
