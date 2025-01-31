@@ -4,7 +4,7 @@ from modules.communication.speed_communication import SpeedCommunication
 from pathlib import Path
 
 class PathFollower(SpeedCommunication):
-    def __init__(self, detect_service, filename="../../ressources/path/path.json", scale=1):
+    def __init__(self, detect_service, filename="ressources/path/path.json", scale=1):
         path_obj = Path(filename)
         filename = path_obj.resolve()
 
