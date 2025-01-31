@@ -1,9 +1,11 @@
-from flowpy_lidar import parse_data
 import time
 from threading import Thread, Lock
 from serial import Serial
 from math import radians, cos, sin, pi
 from typing import Tuple, List
+
+from modules.lidar.flowpy_lidar import parse_data
+
 
 class PointData:
     def __init__(self, angle, distance, robot_position: Tuple[int, int], robot_angle, measured_at=0):
