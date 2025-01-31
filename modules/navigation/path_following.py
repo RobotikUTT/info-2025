@@ -5,23 +5,22 @@ from pathlib import Path
 from math import sqrt
 
 class PathFollower(SpeedCommunication):
-    def __init__(self, detect_service, filename="ressources/path/path.json", scale=0.03):
+    def __init__(self, detect_service, filename="ressources/path/path.json", speed=0.3):
         path_obj = Path(filename)
         filename = path_obj.resolve()
 
         super().__init__(detect_service)
-        self.scale = scale
         self.path = self.load_path(filename)
 
         self.speeds = []
         for i in range(len(self.path) - 1):
             x1, y1 = self.path[i]
             x2, y2 = self.path[i + 1]
-            dx = (x2 - x1) * self.scale
-            dy = (y2 - y1) * self.scale
+            dx = (x2 - x1)
+            dy = (y2 - y1)
             dist = sqrt(dx**2 + dy**2)
-            dx /= dist
-            dy /= dist
+            dx = dx * speed/dist
+            dy = dy * speed/dist
             self.speeds.append((dx, dy))
 
     def load_path(self, filename):
