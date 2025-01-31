@@ -2,6 +2,7 @@ import json
 import time
 from modules.communication.speed_communication import SpeedCommunication
 from pathlib import Path
+from math import sqrt
 
 class PathFollower(SpeedCommunication):
     def __init__(self, detect_service, filename="ressources/path/path.json", scale=0.03):
@@ -18,6 +19,9 @@ class PathFollower(SpeedCommunication):
             x2, y2 = self.path[i + 1]
             dx = (x2 - x1) * self.scale
             dy = (y2 - y1) * self.scale
+            dist = sqrt(dx**2 + dy**2)
+            dx /= dist
+            dy /= dist
             self.speeds.append((dx, dy))
 
     def load_path(self, filename):
