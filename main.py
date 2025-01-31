@@ -7,6 +7,8 @@ def main():
     lidar_service = LidarService()
     lidar_service.start()
     detection_service = DetectionService(10)
+
+    """detection_service = DetectionService(30)
     lidar_service.observers.append(detection_service)
     speed_comm = SpeedCommunication(detection_service)
     rotation_speed = 0.1
@@ -19,9 +21,7 @@ def main():
         v_x = -p_y * rotation_speed
         v_y = p_x * rotation_speed
         time.sleep(0.1)
-        speed_comm.sendSpeedCart(v_x, v_y, 0.0)
-
-
+        speed_comm.sendSpeedCart(v_x, v_y, 0.0)"""
 
 if __name__ == "__main__":
     main()

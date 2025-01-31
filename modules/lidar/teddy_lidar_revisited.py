@@ -26,7 +26,7 @@ class LidarService(Thread):
         super().__init__()
         self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
-        self.values : List[PointData] = [None]*12
+        self.values : List[PointData | None] = [None for _ in range(12)]
         self.observers = []
 
     def run(self):
