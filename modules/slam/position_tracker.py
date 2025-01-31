@@ -1,6 +1,5 @@
 import sys
 import time
-import qwiic_otos
 
 
 class PositionTracker:

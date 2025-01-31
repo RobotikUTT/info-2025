@@ -53,7 +53,7 @@ class DetectionService:
         treat_dist = sum(1 for point in points if point.distance < self.threshold)
 
         if self.stop and time.time() - self.stop_time > 3:
-            self.stop = False  # Resume movement after 4 seconds
+            self.stop = False  # Resume movement after 3 seconds
         elif not self.stop and treat_dist > 1:
             self.stop_time = time.time()
             self.stop = True  # Stop if more than 1 point is too close
