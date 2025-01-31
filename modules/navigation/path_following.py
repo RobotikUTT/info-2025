@@ -3,7 +3,7 @@ import time
 from modules.communication.speed_communication import SpeedCommunication
 
 class PathFollower(SpeedCommunication):
-    def __init__(self, detect_service, filename="../ressources/path/path.json", scale=1):
+    def __init__(self, detect_service, filename="../../ressources/path/path.json", scale=1):
         super().__init__(detect_service)
         self.scale = scale
         self.path = self.load_path(filename)
