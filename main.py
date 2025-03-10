@@ -1,6 +1,4 @@
-from modules.communication.speed_communication import SpeedCommunication
-import time
-from math import cos, sin, pi
+
 from modules.lidar.lidar import LidarService, DetectionService, PrinterService
 from modules.navigation.path_following import PathFollower
 

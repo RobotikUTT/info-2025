@@ -1,6 +1,5 @@
-import pygame
 import time
-from threading import Thread, Lock
+from threading import Thread
 from serial import Serial
 from math import radians, cos, sin, pi
 from typing import Tuple, List

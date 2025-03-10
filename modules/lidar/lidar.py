@@ -1,8 +1,8 @@
 import time
-from threading import Thread, Lock
+from threading import Thread
 from serial import Serial
-from math import radians, cos, sin, pi
-from typing import Tuple, List
+from math import cos, sin, pi
+from typing import Tuple
 
 from modules.lidar.flowpy_lidar import parse_data
 
