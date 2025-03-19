@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.12"
 
 [[package]]
@@ -22,6 +23,7 @@ dependencies = [
     { name = "pygame" },
     { name = "pyserial" },
     { name = "pyyaml" },
+    { name = "simple-pid" },
     { name = "smbus2" },
     { name = "systemd" },
 ]
@@ -37,6 +39,7 @@ requires-dist = [
     { name = "pygame", specifier = ">=2.6.1" },
     { name = "pyserial", specifier = ">=3.5" },
     { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "simple-pid", specifier = ">=2.0.1" },
     { name = "smbus2", specifier = ">=0.5.0" },
     { name = "systemd", specifier = ">=0.17.1" },
 ]
@@ -133,6 +136,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/44/a673647105b1ba6da9824a928634fe23186ab19f9d526d7bdf278cd27bc3/ruff-0.9.3-py3-none-win32.whl", hash = "sha256:eabe5eb2c19a42f4808c03b82bd313fc84d4e395133fb3fc1b1516170a31213c", size = 9834353 },
     { url = "https://files.pythonhosted.org/packages/c3/01/65cadb59bf8d4fbe33d1a750103e6883d9ef302f60c28b73b773092fbde5/ruff-0.9.3-py3-none-win_amd64.whl", hash = "sha256:040ceb7f20791dfa0e78b4230ee9dce23da3b64dd5848e40e3bf3ab76468dcf4", size = 10821444 },
     { url = "https://files.pythonhosted.org/packages/69/cb/b3fe58a136a27d981911cba2f18e4b29f15010623b79f0f2510fd0d31fd3/ruff-0.9.3-py3-none-win_arm64.whl", hash = "sha256:800d773f6d4d33b0a3c60e2c6ae8f4c202ea2de056365acfa519aa48acf28e0b", size = 10038168 },
+]
+
+[[package]]
+name = "simple-pid"
+version = "2.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/78/0a/c670a4f4dea4b21c0b074b193c54698e5e047479e688c8d5495d264c9921/simple_pid-2.0.1.tar.gz", hash = "sha256:5771761c54541c900e597d6c2e4ea93fd2cc98f4e48cb9eca265fba2e65be99e", size = 15577 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/0e/4d4fe01b21558a31a12e029a57cf677666c89c1b00cb82c1b53d0025cd63/simple_pid-2.0.1-py3-none-any.whl", hash = "sha256:1d53ed76b03d949ceea46b538fb22999d27899e2e655aa19b99c40f6edcedca6", size = 7194 },
 ]
 
 [[package]]
