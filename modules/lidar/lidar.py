@@ -8,6 +8,7 @@ from modules.lidar.flowpy_lidar import parse_data
 
 
 class PointData:
+    # struct Teddy pr chaque point mais actuellement position robot pas utilisé
     def __init__(self, angle, distance, robot_position: Tuple[int, int], robot_angle, measured_at=0):
         self.angle = angle
         self.distance = distance
@@ -42,13 +43,17 @@ class LidarService(Thread):
             for distance, angle in parsed_data:
                 self.values.append(PointData(angle, distance, (0, 0), 0, current_time))
 
+            # Programmation Observer Observable desing pattern
+            # Abonnement d'objets au lIDAR pour avoir infos
+            # 2 services abonnés : DetectionService et Printer
             for observer in self.observers:
                 observer.update(self.values)
 
 
 class DetectionService:
-    def __init__(self, threshold):
-        self.threshold = threshold
+    # Logique de détection obstacle sur le périmètre
+    def __init__(self, threshold: int):
+        self.threshold = threshold # distance en mm pour l'arrêt
         self.stop = False
         self.stop_time = 0
     def update(self, points):
@@ -60,6 +65,7 @@ class DetectionService:
             self.stop = True
             
 class PrinterService:
+    # Visualisation des données du LIDAR que pour le debug car ralentit la rasp
     def update(self, points):
         for point in points:
             print(point)

@@ -7,7 +7,7 @@ import math
 from modules.communication.speed_communication import SpeedCommunication
 import time
 
-
+# PAS UTILISE pour l'instant mais pour gérer l'asservissement
 class PositionController:
     def __init__(self):
         self.config = Config().get()

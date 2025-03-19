@@ -5,6 +5,7 @@ from pathlib import Path
 from math import sqrt
 
 class PathFollower(SpeedCommunication):
+    # Hérite de SpeedCommunication pour l'envoi des vitesse
     def __init__(self, detect_service, filename="ressources/path/path.json", speed=0.3):
         path_obj = Path(filename)
         filename = path_obj.resolve()
