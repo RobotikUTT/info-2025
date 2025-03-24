@@ -7,7 +7,6 @@ import math
 from modules.communication.speed_communication import SpeedCommunication
 import time
 
-
 class PositionController:
     def __init__(self):
         self.config = Config().get()
