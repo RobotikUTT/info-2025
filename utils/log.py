@@ -1,5 +1,5 @@
 import logging
-from systemd import journal
+from cysystemd import journal
 from utils.config import Config
 
 
