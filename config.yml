@@ -24,7 +24,7 @@ dimension:
     height: 2000 # en mm
 run:
   path_file: "ressources/path/path.json"
-  speed: 0.3
+  speed: 0.3 # quelle unité ?
   instruction_delay: 0.05 # en secondes
 i2c:
   serial_port: "/dev/serial0"
