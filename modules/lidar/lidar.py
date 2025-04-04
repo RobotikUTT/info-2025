@@ -30,6 +30,7 @@ class LidarService(Thread):
     def __init__(self, position_service=None):
         super().__init__()
         self.config = Config().get()
+        self.log = Log("LidarService")
         self.serial = Serial(self.config["i2c"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
         self.values = []
