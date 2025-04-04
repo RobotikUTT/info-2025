@@ -11,7 +11,7 @@ import time
 class PositionController:
     def __init__(self):
         self.config = Config().get()
-        self.log = Log("position_controller")
+        self.log = Log("PositionController")
 
         # PID Controllers
         p_pos = self.config["PID_position"]["P"]

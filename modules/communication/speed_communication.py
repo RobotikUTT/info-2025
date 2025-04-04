@@ -4,7 +4,7 @@ from utils.log import Log
 class SpeedCommunication(I2CCommunication):
     def __init__(self, detect_ser):
         super().__init__("esp_steppers")
-        self.log = Log("I2CCommunication")
+        self.log = Log("SpeedCommunication")
         self.detect_ser = detect_ser
 
     def sendSpeedPolar(self, r, angle, rot):

@@ -4,6 +4,7 @@ from serial import Serial
 from math import radians, cos, sin, pi
 from typing import Tuple, List
 from utils.config import Config
+from utils.log import Log
 
 PACKET_SIZE = 47
 
@@ -26,13 +27,14 @@ class LidarService(Thread):
     def __init__(self, position_service=None):
         super().__init__()
         self.config = Config().get()
+        self.log = Log("LidarService")
         self.serial = Serial(self.config["i2c"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
         self.values : List[PointData | None] = [None for _ in range(12)]
         self.observers = []
 
     def run(self):
-        print("Lidar ... ready to operate")
+        self.log.debug("Lidar ... ready to operate")
         while True:
             data = self.serial.read(250)
             self.serial.reset_input_buffer()
@@ -81,6 +83,7 @@ class LidarService(Thread):
 class DetectionService:
     def __init__(self):
         self.config = Config().get()
+        self.log = Log("DetectionService")
         self.threshold = self.config["detection"]["stop_threshold"]
         self.stop = False
         self.stop_time = 0

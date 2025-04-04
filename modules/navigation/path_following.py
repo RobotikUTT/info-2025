@@ -4,11 +4,13 @@ from modules.communication.speed_communication import SpeedCommunication
 from pathlib import Path
 from math import sqrt
 from utils.config import Config
+from utils.log import Log
 
 class PathFollower(SpeedCommunication):
     # Hérite de SpeedCommunication pour l'envoi des vitesse
     def __init__(self, detect_service):
         self.config = Config().get()
+        self.log = Log("PathFollower")
         path_obj = Path(self.config["run"]["path_file"])
         filename = path_obj.resolve()
 

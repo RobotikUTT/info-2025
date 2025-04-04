@@ -8,7 +8,6 @@ from utils.log import Log
 class I2CCommunication:
     def __init__(self, device_name: str):
         self.config = Config().get()
-        print(f"This is the config {self.config}")
         self.log = Log("I2CCommunication")
         self.bus = SMBus(
             self.config["i2c_mapping"][device_name]["bus"]
