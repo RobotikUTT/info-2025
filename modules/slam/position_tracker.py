@@ -1,5 +1,6 @@
 import sys
 import time
+from utils.config import Config
 
 
 class PositionTracker:
@@ -14,6 +15,7 @@ class PositionTracker:
         return cls._instance
 
     def __init__(self):
+        self.config = Config().get()
         # Ensure the initialization is done only once
         if not hasattr(self, 'initialized'):
             self.position = (0, 0, 0)  # Initialize position

@@ -5,7 +5,7 @@ from modules.navigation.path_following import PathFollower
 def main():
     lidar_service = LidarService()
     lidar_service.start()
-    detection_service = DetectionService(200)
+    detection_service = DetectionService()
     printer_service = PrinterService()
     lidar_service.observers += [detection_service]
     path_follower = PathFollower(detection_service) # permet de faire le dessin en secours

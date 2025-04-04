@@ -3,11 +3,13 @@ from threading import Thread
 from serial import Serial
 from math import radians, cos, sin, pi
 from typing import Tuple, List
+from utils.config import Config
 
 PACKET_SIZE = 47
 
 class PointData:
     def __init__(self, angle, distance, robot_position: Tuple[int, int], robot_angle, measured_at=0):
+        self.config = Config().get()
         self.angle = angle
         self.distance = distance
         self.robot_position = robot_position
@@ -23,7 +25,8 @@ class PointData:
 class LidarService(Thread):
     def __init__(self, position_service=None):
         super().__init__()
-        self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
+        self.config = Config().get()
+        self.serial = Serial(self.config["i2c"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
         self.values : List[PointData | None] = [None for _ in range(12)]
         self.observers = []
@@ -56,7 +59,8 @@ class LidarService(Thread):
                 pass
 
     def sortData(self, dataList):
-        speed = (dataList[3] << 8 | dataList[2]) / 100
+        # speed = (dataList[3] << 8 | dataList[2]) / 100
+        # Pas utilisé
         startAngle = float(dataList[5] << 8 | dataList[4]) / 100
         lastAngle = float(dataList[-4] << 8 | dataList[-5]) / 100
         if (lastAngle > startAngle):
@@ -75,8 +79,9 @@ class LidarService(Thread):
         return distance_list, angle_list, confidence_list
 
 class DetectionService:
-    def __init__(self, threshold):
-        self.threshold = threshold
+    def __init__(self):
+        self.config = Config().get()
+        self.threshold = self.config["detection"]["stop_threshold"]
         self.stop = False
         self.stop_time = 0
     def update(self, points):

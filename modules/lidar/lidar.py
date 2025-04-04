@@ -3,6 +3,7 @@ from threading import Thread
 from serial import Serial
 from math import cos, sin, pi
 from typing import Tuple
+from utils.config import Config
 
 from modules.lidar.flowpy_lidar import parse_data
 
@@ -10,6 +11,7 @@ from modules.lidar.flowpy_lidar import parse_data
 class PointData:
     # struct Teddy pr chaque point mais actuellement position robot pas utilisé
     def __init__(self, angle, distance, robot_position: Tuple[int, int], robot_angle, measured_at=0):
+        self.config = Config().get()
         self.angle = angle
         self.distance = distance
         self.robot_position = robot_position
@@ -25,7 +27,8 @@ class PointData:
 class LidarService(Thread):
     def __init__(self, position_service=None):
         super().__init__()
-        self.serial = Serial("/dev/serial0", baudrate=230400, timeout=None, bytesize=8, parity="N", stopbits=1)
+        self.config = Config().get()
+        self.serial = Serial(self.config["i2c"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         self.position_service = position_service
         self.values = []
         self.observers = []
@@ -52,8 +55,9 @@ class LidarService(Thread):
 
 class DetectionService:
     # Logique de détection obstacle sur le périmètre
-    def __init__(self, threshold: int):
-        self.threshold = threshold # distance en mm pour l'arrêt
+    def __init__(self):
+        self.config = Config().get()
+        self.threshold = self.config["detection"]["stop_threshold"] # distance en mm pour l'arrêt
         self.stop = False
         self.stop_time = 0
     def update(self, points):

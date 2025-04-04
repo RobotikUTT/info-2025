@@ -20,5 +20,15 @@ dimension:
   robot:
     radius: 30
   map:
-    width: 3000
-    height: 2000
+    width: 3000 # en mm
+    height: 2000 # en mm
+run:
+  path_file: "ressources/path/path.json"
+  speed: 0.3
+  instruction_delay: 0.05 # en secondes
+i2c:
+  serial_port: "/dev/serial0"
+  baudrate: 230400
+detection:
+  stop_threshold: 250 # en mm
+
