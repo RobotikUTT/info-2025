@@ -18,6 +18,10 @@ class PathFollower(SpeedCommunication):
         self.path = self.load_path(filename)
 
         self.speeds = []
+        self._generate_speeds()
+
+
+    def _generate_speeds(self):
         for i in range(len(self.path) - 1):
             x1, y1 = self.path[i]
             x2, y2 = self.path[i + 1]
@@ -34,7 +38,7 @@ class PathFollower(SpeedCommunication):
             with open(filename, "r") as f:
                 return [(x, y) for x, y in json.load(f)]
         except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Error loading path file: {e}")
+            self.log.error(f"Error loading path file: {e}")
             return []
 
     def start(self):
