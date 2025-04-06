@@ -6,7 +6,7 @@ from typing import Tuple
 from utils.config import Config
 from utils.log import Log
 
-from modules.lidar.flowpy_lidar import parse_data
+from modules.lidar.lidar_parser import parse_data
 
 
 class PointData:
