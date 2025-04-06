@@ -42,7 +42,10 @@ class LidarService(Thread):
             self.serial.reset_input_buffer()
             data = self.serial.read(250)
 
+
             parsed_data = parse_data(data)
+            if parsed_data == []:
+                self.log.error("No data received from LIDAR to I2C")
 
             self.values.clear()
             current_time = time.time()
