@@ -15,7 +15,7 @@ class I2CCommunication:
         self.address = self.config["i2c_mapping"][device_name][
             "address"
         ]  # I2C address of the device
-        print(f"This is the bus: {self.bus}, this is the address: {self.address}")
+        self.log.info(f"This is the bus: {self.bus}, this is the address: {self.address}")
 
     def write(self, data: Union[str, list[int], int]):
         """
