@@ -37,6 +37,26 @@ class LidarService(Thread):
         self.observers = []
 
     def run(self):
+        """
+        Boucle principale de lecture du LIDAR et de notification des observateurs.
+
+        Cette méthode :
+            - Réinitialise le buffer d'entrée série.
+            - Lit 250 octets de données depuis le LIDAR via le port série.
+            - Parse les données reçues en couples (distance, angle).
+            - Stocke les données dans `self.values` sous forme d'objets `PointData`.
+            - Notifie tous les objets abonnés (observateurs) via le pattern Observer/Observable.
+
+        Returns:
+            None
+
+        Notes:
+            - Les données sont lues en continu (boucle infinie).
+            - Si les données reçues sont invalides ou absentes, un message d'erreur est loggé.
+            - Le timestamp est ajouté à chaque point pour un suivi temporel.
+            - Les observateurs typiques incluent un service de détection d'obstacle (`DetectionService`)
+              et un service d'affichage (`Printer`).
+        """
         self.log.debug("Lidar ... ready to operate")
         while True:
             self.serial.reset_input_buffer()
@@ -44,7 +64,7 @@ class LidarService(Thread):
 
 
             parsed_data = parse_data(data)
-            if parsed_data == []:
+            if not parsed_data:
                 self.log.error("No data received from LIDAR to I2C")
 
             self.values.clear()
@@ -67,7 +87,26 @@ class DetectionService:
         self.threshold = self.config["detection"]["stop_threshold"] # distance en mm pour l'arrêt
         self.stop = False
         self.stop_time = 0
-    def update(self, points):
+
+
+    def update(self, points: list[float]):
+        """
+        Met à jour l'état d'arrêt du robot en fonction des distances mesurées.
+
+        Args:
+            points (list): Liste d'objets contenant un attribut `distance` (float),
+                           représentant la distance mesurée à un obstacle.
+
+        Returns:
+            None
+
+        Comportement:
+            - Compte le nombre de points dont la distance est inférieure à un seuil (`self.threshold`)
+              et différente de 0 (valeurs valides).
+            - Si plus de 20 points détectent un obstacle à distance courte, le robot est stoppé.
+            - Le robot reste à l'arrêt pendant au moins 1 seconde après la détection,
+              puis reprend automatiquement si les conditions sont redevenues normales.
+        """
         treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
         if self.stop and time.time() - self.stop_time > 1:
             self.stop = False

@@ -22,6 +22,21 @@ class PathFollower(SpeedCommunication):
 
 
     def _generate_speeds(self):
+        """
+                Génère les vecteurs de vitesses normalisés à partir du chemin défini.
+
+                Pour chaque segment consécutif du chemin (`self.path`), cette méthode :
+                    - Calcule le vecteur directionnel entre deux points.
+                    - Normalise ce vecteur à la vitesse désirée définie dans `self.config["run"]["speed"]`.
+                    - Stocke le vecteur de vitesse (dx, dy) dans `self.speeds`.
+
+                Returns:
+                    None
+
+                Notes:
+                    - Assure que chaque segment est parcouru à vitesse constante, indépendamment de sa longueur.
+                    - La liste `self.speeds` contiendra un vecteur par segment du chemin.
+        """
         for i in range(len(self.path) - 1):
             x1, y1 = self.path[i]
             x2, y2 = self.path[i + 1]
