@@ -8,7 +8,6 @@ from utils.log import Log
 class I2CCommunication:
     def __init__(self, device_name: str):
         self.config = Config().get()
-        print(f"This is the config {self.config}")
         self.log = Log("I2CCommunication")
         self.bus = SMBus(
             self.config["i2c_mapping"][device_name]["bus"]
@@ -16,7 +15,7 @@ class I2CCommunication:
         self.address = self.config["i2c_mapping"][device_name][
             "address"
         ]  # I2C address of the device
-        print(f"This is the bus: {self.bus}, this is the address: {self.address}")
+        self.log.info(f"This is the bus: {self.bus}, this is the address: {self.address}")
 
     def write(self, data: Union[str, list[int], int]):
         """
@@ -29,16 +28,16 @@ class I2CCommunication:
                 # Optional: specify the register address to write to
                 register = 0x00  # Default register, change if needed
                 self.bus.write_i2c_block_data(self.address, register, byte_data)
-                self.log.debug(f"WRITE STRING: {data}")
+                # self.log.debug(f"WRITE STRING: {data}")
             elif isinstance(data, list):
                 # For list of integers, treat the first element as register
                 register = data[0]  # First element is the register address
                 self.bus.write_i2c_block_data(self.address, register, data[1:])
-                self.log.debug(f"WRITE LIST: {data}")
+                # self.log.debug(f"WRITE LIST: {data}")
             else:
                 # For single integer, directly write to the device
                 self.bus.write_byte(self.address, data)
-                self.log.debug(f"WRITE BYTE: {data}")
+                # self.log.debug(f"WRITE BYTE: {data}")
 
             self.log.info(
             f"WRITE: Data written to device at address {self.address}: {data}"
