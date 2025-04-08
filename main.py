@@ -16,6 +16,8 @@ def main(run_path_follower: bool):
         path_follower = PathChecker(detection_service) # PathFollower(detection_service)  # permet de faire le dessin en secours
         path_follower.start()  # faudrait le combiner avec le PID quand même, chemin dans un json
 
+    print("No --run parameter set, doesn't use motors so")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Start the Lidar system.")
     parser.add_argument(
