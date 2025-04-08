@@ -20,6 +20,15 @@ class PathChecker(SpeedCommunication):
         self.speeds = []
         self._generate_speeds()
 
+    def load_path(self, filename):
+        """Load the path from a JSON file."""
+        try:
+            with open(filename, "r") as f:
+                return [(x, y) for x, y in json.load(f)]
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            self.log.error(f"Error loading path file: {e}")
+            return []
+
 
     def _generate_speeds(self):
         """
