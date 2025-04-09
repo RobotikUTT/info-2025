@@ -26,7 +26,7 @@ class SpeedCommunication(I2CCommunication):
             sendString = f"R: {r:.6f}, w: {angle:.6f}, r: {rot:.6f}"
             self.write(sendString)
 
-    def sendSpeedCart(self, x: float, y: float, rot: float):
+    def sendSpeedCart(self, x: float, y: float, rot: float, vit: float):
         """
           Envoie les vitesses du robot sous forme cartésienne.
 
@@ -45,7 +45,7 @@ class SpeedCommunication(I2CCommunication):
               - La précision est limitée à 3 décimales pour privilégier la fréquence d'envoi des commandes.
           """
         if self.detect_ser.stop: # Varibale qui permet de stopper le robot si obstacle
-            self.write("x: 0.0, y: 0.0, r: 0.0")
+            self.write("x: 0.0, y: 0.0, r: 0.0") # , v: 0.0
         else:
-            sendString = f"x: {x:.3f}, y: {y:.3f}, r: {rot:.3f}"
+            sendString = f"x: {x:.3f}, y: {y:.3f}, r: {rot:.3f}" #  , v : {vit:.3f} data cannot exeed 32 bytes
             self.write(sendString)

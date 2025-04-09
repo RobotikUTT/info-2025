@@ -13,7 +13,8 @@ def main(run_path_follower: bool):
     lidar_service.observers += [detection_service]
 
     if run_path_follower:
-        path_follower = PathChecker(detection_service) # PathFollower(detection_service)  # permet de faire le dessin en secours
+        path_follower = PathFollower(detection_service) # PathFollower(detection_service)  # permet de faire le dessin en secours
+        # PathChecker fonctionne toujours
         path_follower.start()  # faudrait le combiner avec le PID quand même, chemin dans un json
 
     print("No --run parameter set, doesn't use motors so")

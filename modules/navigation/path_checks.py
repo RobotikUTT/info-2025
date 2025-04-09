@@ -66,7 +66,7 @@ class PathChecker(SpeedCommunication):
 
         for x, y in self.speeds:
             time.sleep(self.config["run"]["instruction_delay"])
-            self.sendSpeedCart(x, y, 0)
+            self.sendSpeedCart(x, y, 0, 0)
 
             """
             Envoi vitesse, à exécuter en x temps, soit vitesse et distance en cm soit temps
