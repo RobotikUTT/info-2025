@@ -1,5 +1,6 @@
 from modules.communication.i2c_communication import I2CCommunication
 from utils.log import Log
+import time
 # Si bug I2C : sudo i2cdetect -y 1
 # Permet de voir les adresses available
 
@@ -9,24 +10,6 @@ class SpeedCommunication(I2CCommunication):
         self.log = Log("SpeedCommunication")
         self.detect_ser = detect_ser
 
-    def sendSpeedPolar(self, r: float, angle: float, rot: float):
-        """
-        Sends the speed command to the robot in polar coordinates format.
-        Not used in its current form
-
-        Args:
-            r (float): Linear speed magnitude (radius component).
-            angle (float): Direction of movement in radians.
-            rot (float): Rotational speed (angular velocity).
-
-        Returns:
-            None
-        """
-        if self.detect_ser.stop:
-            self.write("R: 0.0, w: 0.0, r: 0.0")
-        else:
-            sendString = f"R: {r:.6f}, w: {angle:.6f}, r: {rot:.6f}"
-            self.write(sendString)
 
     def sendSpeedCart(self, x: float, y: float, rot: float, vit: float):
         """
@@ -48,6 +31,11 @@ class SpeedCommunication(I2CCommunication):
           """
         if self.detect_ser.stop: # Varibale qui permet de stopper le robot si obstacle
             self.write("x: 0.0, y: 0.0, r: 0.0") # , v: 0.0
+            while self.detect_ser.stop:
+                self.log.warning("STOP: obstacle détecté, en attente...")
+                self.sendSpeedCart(0.0, 0.0, 0.0, 0.0)  # assure arrêt total
+                time.sleep(0.1)  # légère pause avant de rechecker
+
         else:
             sendString = f"x: {x:.3f}, y: {y:.3f}, r: {rot:.3f}" #  , v : {vit:.3f} data cannot exeed 32 bytes
             self.write(sendString)
