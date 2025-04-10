@@ -72,6 +72,7 @@ class PathFollower(SpeedCommunication):
         # while True:
         #    for x, y, r, v in self.points:
                 # time.sleep(self.config["run"]["instruction_delay"])
+
         x, y, r = self.points[point_name] # TODO : check le fonctionnement
         x, y, r = self.relative_from_absolute(x, y, r)
         self.log.info(f"Sending {x=}, {y=}, {r=}, {0.0}")
