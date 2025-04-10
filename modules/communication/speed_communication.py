@@ -1,5 +1,7 @@
 from modules.communication.i2c_communication import I2CCommunication
 from utils.log import Log
+# Si bug I2C : sudo i2cdetect -y 1
+# Permet de voir les adresses available
 
 class SpeedCommunication(I2CCommunication):
     def __init__(self, detect_ser):

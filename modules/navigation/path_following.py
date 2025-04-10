@@ -59,10 +59,11 @@ class PathFollower(SpeedCommunication):
     def start(self):
         self.speeds = []
         """Follow the path by sending speed commands."""
-        self.speeds = [(10.0, 10.0, 0.0, 0.0), (10.0, 5.0, 20.0, 0.0)]
+        self.speeds = [(10.0, 10.0, 0.0, 0.0), (10.0, 5.0, 20.0, 0.0), (0.0, 0.0, 10.0, 0.0)]
         # x, y, d, r avec x,y positions finales en relatif par rapport position actuelle, d la distance, r l'angle robot par rapport à l'actuel
         while True:
             for x, y, r, v in self.speeds:
                 # time.sleep(self.config["run"]["instruction_delay"])
-                time.sleep(20) # car enverra un msg que quand on veut que le robot bouge
+                self.log.info(f"Sending {x=}, {y=}, {r=}, {v=}")
+                time.sleep(10) # car enverra un msg que quand on veut que le robot bouge
                 self.sendSpeedCart(x, y, r, v) # v not used yet
