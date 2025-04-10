@@ -1,0 +1,8 @@
+- name: "zone_recolte"
+  x: 500
+  y: 1000
+  r: 0
+- name: "zone_depot"
+  x: 1500
+  y: 2000
+  r: 180

@@ -2,10 +2,13 @@ import argparse
 from modules.lidar.lidar import LidarService, DetectionService, PrinterService
 from modules.navigation.path_checks import PathChecker
 from modules.navigation.path_following import PathFollower
+from modules.strategy.deploy_strategy import Strategy
+
 
 def main(run_path_follower: bool):
     lidar_service = LidarService()
     lidar_service.start()
+    strategy = Strategy
 
     detection_service = DetectionService()
     printer_service = PrinterService()
@@ -15,7 +18,8 @@ def main(run_path_follower: bool):
     if run_path_follower:
         path_follower = PathFollower(detection_service) # PathFollower(detection_service)  # permet de faire le dessin en secours
         # PathChecker fonctionne toujours
-        path_follower.start()  # faudrait le combiner avec le PID quand même, chemin dans un json
+        strategy.start(path_follower)
+        # path_follower.start()  # faudrait le combiner avec le PID quand même, chemin dans un json
 
     print("No --run parameter set, doesn't use motors so")
 
