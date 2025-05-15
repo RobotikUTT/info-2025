@@ -3,9 +3,11 @@ log:
   mode: ["file", "stream", "journal"]
   logger: {}
   level: "DEBUG"
+
 simulation:
   run: True
   size: 400
+
 i2c_mapping:
   raspberry:
     address: 0x10
@@ -16,12 +18,14 @@ i2c_mapping:
   esp_steppers:
     address: 0x08
     bus: 1
+
 dimension:
   robot:
     radius: 30
   map:
     width: 3000 # en mm
     height: 2000 # en mm
+
 run:
   map_file: "map.yml"
   speed: 0.3 # quelle unité ?
@@ -30,10 +34,25 @@ run:
     x: 0.0
     y: 0.0
     r: 0.0
+
 i2c:
   serial_port: "/dev/serial0"
   baudrate: 230400
+
 detection:
   stop_threshold: 220 # en mm
+
 strategy:
   path: "strategy.yml"
+
+PositionTracker:
+  update_interval: 0.001
+
+PositionController:
+  speed: 0.5                      # Vitesse cible (m/s)
+  rotation_speed: 1.0            # Vitesse angulaire cible (rad/s)
+  acceleration: 0.2              # Accélération cible (m/s²)
+  rotation_acceleration: 0.5    # Accélération angulaire cible (rad/s²)
+  update_rate: 50                # Fréquence de mise à jour en Hz
+  error_pos: 0.01                # Erreur de position tolérée (m)
+  error_angle: 0.05              # Erreur d'angle tolérée (rad)
