@@ -1,5 +1,5 @@
 import time
-from threading import Thread
+from threading import Thread, Lock
 from serial import Serial
 from math import cos, sin, pi
 from typing import Tuple
@@ -91,6 +91,7 @@ class DetectionService:
         self.threshold = self.config["detection"]["stop_threshold"] # distance en mm pour l'arrêt
         self.stop = False
         self.stop_time = 0
+        self.lock = Lock()
 
 
     def update(self, points: list[float]):
@@ -111,13 +112,14 @@ class DetectionService:
             - Le robot reste à l'arrêt pendant au moins 1 seconde après la détection,
               puis reprend automatiquement si les conditions sont redevenues normales.
         """
-        treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
-        if self.stop and time.time() - self.stop_time > 1:
-            self.stop = False
-        if treat_dist > 20:
-            self.stop_time = time.time()
-            self.stop = True
-            self.log.info("### STOP : Obstacle detected ###")
+        with self.lock:
+            treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
+            if self.stop and time.time() - self.stop_time > 1:
+                self.stop = False
+            if treat_dist > 20:
+                self.stop_time = time.time()
+                self.stop = True
+                self.log.info("### STOP : Obstacle detected ###")
             
 class PrinterService:
     # Visualisation des données du LIDAR que pour le debug car ralentit la rasp

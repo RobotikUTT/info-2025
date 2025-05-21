@@ -19,11 +19,11 @@ class Position:
         norm_w = 1.0 if self.w > 0 else -1.0
         return Position(norm_x, norm_y, norm_w)
 
-    def delta(self, other: 'Position') -> 'Position':
+    def minus(self, other: 'Position') -> 'Position':
         return Position(
-            other.x - self.x,
-            other.y - self.y,
-            other.w - self.w
+            self.x - other.x,
+            self.y - other.y,
+            self.w - other.w
         )
 
     def add(self, other: 'Position') -> 'Position':
@@ -33,11 +33,11 @@ class Position:
             self.w + other.w
         )
 
-    def scalePos(self, alpha: float) -> 'Position':
+    def multiplyPos(self, alpha: float) -> 'Position':
         self.x *= alpha
         self.y *= alpha
 
-    def scaleAngle(self, alpha: float) -> 'Position':
+    def multiplyAngle(self, alpha: float) -> 'Position':
         self.w *= alpha
         self.w = self.normalize_angle(self.w)
 

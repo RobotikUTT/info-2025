@@ -18,7 +18,7 @@ class PositionController(Thread, ABC):
     Force à implémenter loop en fonction du type de controller.
     """
 
-    def __init__(self):
+    def __init__(self, detection_service):
         super().__init__()
         self.config = Config().get()
         self.log = Log("PositionController")
@@ -29,6 +29,7 @@ class PositionController(Thread, ABC):
 
         self.positionTracker = PositionTracker()
         self.speedCommunication = SpeedCommunication()
+        self.detection_service = detection_service
 
         self.target_speed = self.config["speed"]
         self.target_rotation_speed = self.config["rotation_speed"]
@@ -43,12 +44,18 @@ class PositionController(Thread, ABC):
         self.goTo(*position.get())
 
         self.setup()
-        self.start()
         self.log.info("Contrôleur de position initialisé.")
 
+    @abstractmethod
     def setup(self):
         """Méthode d'initialisation optionnelle à redéfinir."""
         pass
+
+    def goToRelative(self, x, y, w, arrivedCallback=None):
+        current_pos = self.positionTracker.getCurrentPosition()
+        destination = current_pos.add(Position(x, y, w))
+        self.goTo(*destination.get(), arrivedCallback)
+
 
     def goTo(self, x, y, w, arrivedCallback=None):
         with self.lock:
@@ -71,6 +78,10 @@ class PositionController(Thread, ABC):
     def loop(self):
         pass
 
+    @abstractmethod
+    def obstacleDetected(self):
+        pass
+
     def run(self):
         self.log.info("Démarrage du thread de contrôle de position.")
         while self.running:
@@ -81,10 +92,14 @@ class PositionController(Thread, ABC):
                     with self.lock:
                         if self.isArrived():
                             self.moving = False
+                            self.speedCommunication.sendSpeedCart(0, 0, 0)
                             callback = self.arrivedCallback
                             self.log.info("Position cible atteinte.")
                             if callback and callable(callback):
                                 callback()
+                        if self.detection_service.stop:
+                            self.speedCommunication.sendSpeedCart(0, 0, 0)
+                            self.obstacleDetected()
                         else:
                             self.loop()
                 except Exception as e:
@@ -106,13 +121,19 @@ class PositionControllerLinear(PositionController):
     def loop(self):
         current_pos = self.positionTracker.getCurrentPosition()
 
-        delta_pos = current_pos.delta(self.target_position)
+        delta_pos = self.target_position.minus(current_pos)
         vect_speed = delta_pos.normalize()
 
-        vect_speed.scalePos(self.target_speed)
-        vect_speed.scaleAngle(self.target_rotation_speed)
+        vect_speed.multiplyPos(self.target_speed)
+        vect_speed.multiplyAngle(self.target_rotation_speed)
 
         self.speedCommunication.sendSpeedCart(*vect_speed.get())
+
+    def setup(self):
+        pass
+
+    def obstacleDetected(self):
+        pass
 
 
 

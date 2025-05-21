@@ -1,2 +1,26 @@
-- zone_recolte # mettre les points dans l'ordre
-- zone_depot
+# exemple de strategie
+- move :
+    type : "named"
+    target : "zone_recolte"
+- effect :
+    take : [1]
+    release : [2]
+- move:
+    type : "relative"
+    x : 0
+    y : 0
+    w : 3.14 # equivalent à tourner d'un demi tour
+- effect :
+      release : [2]
+- move :
+    type : "absolute"
+    x : "100"
+    y : "100"
+    w : "0"
+- wait : 1.0 # en secondes
+- effect :
+    release : [1]
+- wait : 1.0
+- move :
+    type : "named"
+    target : "zone_depot"
