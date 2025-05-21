@@ -1,11 +1,14 @@
 from utils.log import Log
 from utils.config import Config
 from utils.tools import load_yml
+from threading import Thread
+from queue import Queue
 import time
 import modules.strategy.structure_validator as structure_validator
 
-class Strategy():
+class Strategy(Thread):
     def __init__(self, position_controller, effector_controller):
+        super().__init__()
         self.log = Log("Strategy")
         self.config = Config().get()
         self.strategy = load_yml(self.config["strategy"]["path"])
@@ -17,9 +20,16 @@ class Strategy():
         self.position_controller = position_controller
         self.effector_controller = effector_controller
 
-    def start(self):
         self.current_step = 0
-        self.redirect(self.strategy[self.current_step])
+
+        self.step_queue = Queue()
+
+    def run(self):
+        while True:
+            step = self.step_queue.get()
+            if step:
+                self.redirect(step)
+
     def move_named(self, name):
         self.log.info(f"move_named to {name}")
         if name in self.map:
@@ -55,7 +65,7 @@ class Strategy():
         self.current_step += 1
         if self.current_step < len(self.strategy):
             step = self.strategy[self.current_step]
-            self.redirect(step)
+            self.step_queue.put(step)
         else:
             self.log.info("Stratégie terminée.")
 
