@@ -12,7 +12,7 @@ i2c_mapping:
   raspberry:
     address: 0x10
     bus: 2
-  esp_sensors:
+  esp_effectors:
     address: 0x20
     bus: 2
   esp_steppers:
@@ -35,7 +35,7 @@ run:
     y: 0.0
     r: 0.0
 
-i2c:
+serial:
   serial_port: "/dev/serial0"
   baudrate: 230400
 

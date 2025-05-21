@@ -32,9 +32,9 @@ class LidarService(Thread):
         self.config = Config().get()
         self.log = Log("LidarService")
         try:
-            self.serial = Serial(self.config["i2c"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
+            self.serial = Serial(self.config["serial"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         except Exception as e:
-            self.log.error(f'Cannot connect to I2C {self.config["i2c"]["serial_port"]}: {e}')
+            self.log.error(f'Cannot connect to I2C {self.config["serial"]["serial_port"]}: {e}')
             exit(1)
         self.position_service = position_service
         self.values = []

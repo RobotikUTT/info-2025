@@ -62,3 +62,27 @@ class I2CCommunication:
         except Exception as e:
             self.log.error(f"Error reading from I2C device: {e}")
             return ""
+
+    @staticmethod
+    def scan_i2c_bus(bus_number: int = 2) -> list[int]:
+        """
+        Scans the specified I2C bus for connected devices and returns a list of detected addresses.
+        """
+        from smbus2 import SMBus
+        found_devices = []
+
+        try:
+            with SMBus(bus_number) as bus:
+                print(f"[INFO] Scanning I2C bus {bus_number}...")
+                for address in range(0x03, 0x78):  # 7-bit I2C address range
+                    try:
+                        bus.write_quick(address)
+                        found_devices.append(address)
+                        print(f"[INFO] Found I2C device at address: 0x{address:02X}")
+                    except OSError:
+                        continue  # No device at this address
+        except Exception as e:
+            print(f"[ERROR] Failed to open I2C bus {bus_number}: {e}")
+
+        print(f"[INFO] Scan complete. Devices found: {[hex(addr) for addr in found_devices]}")
+        return found_devices

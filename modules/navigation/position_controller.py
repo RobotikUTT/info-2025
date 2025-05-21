@@ -122,8 +122,6 @@ class PositionControllerLinear(PositionController):
 
 
 
-
-
 """
     Base Position relative -> pas besoin de d'exécution de thread
     Version zigzag
