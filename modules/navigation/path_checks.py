@@ -20,7 +20,7 @@ class PathChecker(SpeedCommunication):
         self.speeds = []
         self._generate_speeds()
 
-    def load_path(self, filename):
+    def load_path(self, filename) -> [] | dict:
         """Load the path from a JSON file."""
         try:
             with open(filename, "r") as f:
@@ -56,7 +56,7 @@ class PathChecker(SpeedCommunication):
             dy = dy * self.config["run"]["speed"]/dist
             self.speeds.append((dx, dy))
 
-    def rotate360(self):
+    def rotate360(self) -> tuple[float, float, float]:
         # Future function to only rotate
         return 0,0,0.8
 
