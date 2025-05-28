@@ -43,11 +43,11 @@ class PositionController(Thread, ABC):
         position = self.positionTracker.getCurrentPosition()
         self.goTo(*position.get())
 
-        self.setup()
+        self._setup()
         self.log.info("Contrôleur de position initialisé.")
 
     @abstractmethod
-    def setup(self):
+    def _setup(self): # Méthode inutile si pas instancié -> TODO refactor le init dans un _setup
         """Méthode d'initialisation optionnelle à redéfinir."""
         pass
 
@@ -95,7 +95,7 @@ class PositionController(Thread, ABC):
                             self.speedCommunication.sendSpeedCart(0, 0, 0)
                             callback = self.arrivedCallback
                             self.log.info("Position cible atteinte.")
-                            if callback and callable(callback):
+                            if callback and callable(callback):  # WTF is this ? Type confusion
                                 callback()
                         if self.detection_service.stop:
                             self.speedCommunication.sendSpeedCart(0, 0, 0)
@@ -113,10 +113,14 @@ class PositionController(Thread, ABC):
                 self.log.warn(f"Boucle trop lente ({delta_time:.4f}s), périodicité non respectée.")
 
 
-class PositionControllerLinear(PositionController):
+class PositionControllerLinear():
     """
     Contrôleur de position basé sur une correction linéaire simple.
     """
+
+    def __init__(self):
+        # super().__init__()
+        self.log = Log("PositionControllerLinear")
 
     def loop(self):
         current_pos = self.positionTracker.getCurrentPosition()
@@ -129,7 +133,7 @@ class PositionControllerLinear(PositionController):
 
         self.speedCommunication.sendSpeedCart(*vect_speed.get())
 
-    def setup(self):
+    def _setup(self):
         pass
 
     def obstacleDetected(self):
@@ -147,14 +151,15 @@ class PositionControllerLinear(PositionController):
     Base Position relative -> pas besoin de d'exécution de thread
     Version zigzag
 """
-class PositionControllerZigZag():
+class PositionControllerZigZag(PositionController):
     def __init__(self):
-        self.config = Config().get()
-        self.log = Log("PositionController")
+        super().__init__()
+        self.log = Log("PositionControllerZigZag")
         self.positionTracker = PositionTracker()
         self.speedCommunication = SpeedCommunication()
 
-    def goTo(self, target_x, target_y, target_w):
+
+    def goTo(self, target_x, target_y, target_w, arrivedCallback=None):
         current_x, current_y, current_w = self.positionTracker.getCurrentPosition()
         self.speedCommunication.sendSpeedCart(target_x - current_x,
                                               target_y - current_y,
@@ -165,8 +170,11 @@ class PositionControllerZigZag():
     Version PID
 """
 class PositionControllerPID(PositionController):
-    def setup(self):
+    def __init__(self):
         super().__init__()
+        self.log = Log("PositionControllerPID")
+
+    def _setup(self):
 
         # PID Controllers
         p_pos = self.config["PID_position"]["P"]

@@ -39,7 +39,20 @@ sudo apt install build-essential libsystemd-dev \
   && uv sync
 ```
 
+Enable I2C on Raspberry :
+```bash
+sudo raspi-config
+# Interfaces
+# Enable I2C
+```
+
 Set up the config.yml file.
+
+To install all libs needed without keeping temp artefacts : 
+```bash
+uv venv # to create the virtual env
+uv pip install -e .
+```
 
 Then run :
 

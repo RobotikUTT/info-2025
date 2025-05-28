@@ -41,6 +41,7 @@ serial:
 
 detection:
   stop_threshold: 220 # en mm
+  bypass_detection: True # permet de ne pas crash si le lidar ne fonctionne pas
 
 strategy:
   path: "strategy.yml"

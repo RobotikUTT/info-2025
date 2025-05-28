@@ -1,8 +1,5 @@
-import json
-import time
 from modules.communication.speed_communication import SpeedCommunication
 from pathlib import Path
-from math import sqrt
 from utils.config import Config
 from utils.log import Log
 import math
@@ -16,12 +13,12 @@ class PathFollower(SpeedCommunication):
         path_obj = Path(self.config["run"]["map_file"])
         filename = path_obj.resolve()
 
-        super().__init__(detect_service)
+        super().__init__() # super().__init__(detect_service) était cassé Guilpy
         self.map = load_yml(filename)
 
         self.points = {}
-        self._generate_speeds()
         self.position = {'x': self.config["run"]["position"]["x"], 'y':self.config["run"]["position"]["y"], 'r': self.config["run"]["position"]["r"]}
+        self._generate_speeds()
 
 
     def _generate_speeds(self):
@@ -73,9 +70,15 @@ class PathFollower(SpeedCommunication):
         #    for x, y, r, v in self.points:
                 # time.sleep(self.config["run"]["instruction_delay"])
 
-        x, y, r = self.points[point_name] # TODO : check le fonctionnement
-        x, y, r = self.relative_from_absolute(x, y, r)
+        self.log.debug(f"Follow path: {self.points[point_name]=}")
+        x, y, r, v = self.points[point_name] # TODO : check le fonctionnement
+        x, y, r= self.relative_from_absolute(x, y, r)
         self.log.info(f"Sending {x=}, {y=}, {r=}, {0.0}")
         # time.sleep(10) # car enverra un msg que quand on veut que le robot bouge
-        self.sendSpeedCart(x, y, r, 0.0) # v not used yet
+        self.sendSpeedCart(int(x), int(y), int(r), 0) # v not used yet
         self.update_postion(x, y, r) # Voir en dynamique selon pos robot
+
+    def follow_path(self):
+        # TODO : need to be implemented by Guilpy
+        # interface pour le moment
+        self.run_to("zone_recolte")

@@ -1,8 +1,4 @@
-import sys
-import time
-import math
 import qwiic_otos
-from utils.config import Config
 from utils.log import Log
 from utils.position import Position
 from utils.config import Config

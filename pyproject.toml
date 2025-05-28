@@ -12,9 +12,19 @@ dependencies = [
     "simple-pid>=2.0.1",
     "smbus2>=0.5.0",
     "systemd>=0.17.1",
+    "jsonschema",
+    "sparkfun-qwiic-otos @ git+https://github.com/sparkfun/Qwiic_OToS_Py.git"
 ]
 
 [dependency-groups]
 dev = [
     "ruff>=0.9.3",
 ]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+packages = ["modules", "strategies", "simulation", "ressources", "tests", "utils"]

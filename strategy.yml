@@ -14,9 +14,9 @@
       release : [2]
 - move :
     type : "absolute"
-    x : "100"
-    y : "100"
-    w : "0"
+    x : 100
+    y : 100
+    w : 0
 - wait : 1.0 # en secondes
 - effect :
     release : [1]

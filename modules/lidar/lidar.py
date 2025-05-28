@@ -13,6 +13,7 @@ class PointData:
     # struct Teddy pr chaque point mais actuellement position robot pas utilisé
     def __init__(self, angle, distance, robot_position: Tuple[int, int], robot_angle, measured_at=0):
         self.config = Config().get()
+        self.bypass_detection = self.config["detection"]["bypass_detection"]
         self.log = Log("PointData")
         self.angle = angle
         self.distance = distance
@@ -35,7 +36,8 @@ class LidarService(Thread):
             self.serial = Serial(self.config["serial"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         except Exception as e:
             self.log.error(f'Cannot connect to I2C {self.config["serial"]["serial_port"]}: {e}')
-            exit(1)
+            if not self.config["detection"]["bypass_detection"]:
+                exit(1)
         self.position_service = position_service
         self.values = []
         self.observers = []
@@ -63,24 +65,27 @@ class LidarService(Thread):
         """
         self.log.debug("Lidar ... ready to operate")
         while True:
-            self.serial.reset_input_buffer()
-            data = self.serial.read(250)
+            if not self.config["detection"]["bypass_detection"]:
+                self.serial.reset_input_buffer()
+                data = self.serial.read(250)
 
 
-            parsed_data = parse_data(data)
-            if not parsed_data:
-                self.log.error("No data received from LIDAR to I2C")
+                parsed_data = parse_data(data)
+                if not parsed_data:
+                    self.log.error("No data received from LIDAR to I2C")
 
-            self.values.clear()
-            current_time = time.time()
-            for distance, angle in parsed_data:
-                self.values.append(PointData(angle, distance, (0, 0), 0, current_time))
+                self.values.clear()
+                current_time = time.time()
+                for distance, angle in parsed_data:
+                    self.values.append(PointData(angle, distance, (0, 0), 0, current_time))
 
-            # Programmation Observer Observable desing pattern
-            # Abonnement d'objets au lIDAR pour avoir infos
-            # 2 services abonnés : DetectionService et Printer
-            for observer in self.observers:
-                observer.update(self.values)
+                # Programmation Observer Observable desing pattern
+                # Abonnement d'objets au lIDAR pour avoir infos
+                # 2 services abonnés : DetectionService et Printer
+                for observer in self.observers:
+                    observer.update(self.values)
+            else:
+                pass
 
 
 class DetectionService:
