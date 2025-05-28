@@ -29,7 +29,7 @@ dimension:
 run:
   map_file: "configuration/map.yml"
   speed: 0.3 # quelle unité ?
-  instruction_delay: 0.05 # en secondes
+  instruction_delay: 0.5 # en secondes
   position:
     x: 0.0
     y: 0.0
@@ -41,7 +41,7 @@ serial:
 
 detection:
   stop_threshold: 220 # en mm
-  bypass_detection: True # permet de ne pas crash si le lidar ne fonctionne pas
+  bypass_detection: False # permet de ne pas crash si le lidar ne fonctionne pas quand set à True
 
 strategy:
   path: "configuration/strategy.yml"

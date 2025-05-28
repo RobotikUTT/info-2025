@@ -4,21 +4,31 @@ from utils.config import Config
 from utils.log import Log
 import math
 from utils.tools import load_yml
+import time
+import threading
 
 class PathFollower(SpeedCommunication):
     # Hérite de SpeedCommunication pour l'envoi des vitesse
     def __init__(self, detect_service):
+        super().__init__()  # super().__init__(detect_service) était cassé Guilpy
         self.config = Config().get()
         self.log = Log("PathFollower")
+        self.detection_service = detect_service
         path_obj = Path(self.config["run"]["map_file"])
         filename = path_obj.resolve()
 
-        super().__init__() # super().__init__(detect_service) était cassé Guilpy
+
         self.map = load_yml(filename)
 
         self.points = {}
         self.position = {'x': self.config["run"]["position"]["x"], 'y':self.config["run"]["position"]["y"], 'r': self.config["run"]["position"]["r"]}
         self._generate_speeds()
+
+        # Gestion détection
+        self.interrupted = False
+        self.lock = threading.Lock()
+        self.detection_thread = threading.Thread(target=self.handle_detection, daemon=True)
+        self.detection_thread.start()
 
 
     def _generate_speeds(self):
@@ -54,29 +64,44 @@ class PathFollower(SpeedCommunication):
 
         return x_rel, y_rel, dr
 
-    def update_postion(self, x_rel: float, y_rel: float, r_rel: float) -> None:
+    def update_position(self, x_rel: float, y_rel: float, r_rel: float) -> None:
         """Update the absolute position of the robot by adding relative position"""
         self.position['x'] += x_rel
         self.position['y'] += y_rel
         self.position['r'] += r_rel
 
+    def handle_detection(self):
+        while not self.interrupted:
+            if self.detection_service and self.detection_service.stop:
+                self.interrupted = True
+                self.log.warn("Obstacle détecté ! Envoi d'un STOP d'urgence.")
+                self.sendSpeedCart(-1, -1, -1)  # STOP immédiat
+                break
+            time.sleep(0.05)  # Surveillance rapide mais non bloquante
 
-    def run_to(self, point_name:str):
-
-        """Follow the path by sending speed commands."""
-        # self.speeds = [(10.0, 10.0, 0.0, 0.0), (10.0, 5.0, 20.0, 0.0), (0.0, 0.0, 10.0, 0.0)]
-        # x, y, d, r avec x,y positions finales en relatif par rapport position actuelle, d la distance, r l'angle robot par rapport à l'actuel
-        # while True:
-        #    for x, y, r, v in self.points:
-                # time.sleep(self.config["run"]["instruction_delay"])
-
+    def run_to(self, point_name: str):
         self.log.debug(f"Follow path: {self.points[point_name]=}")
-        x, y, r, v = self.points[point_name] # TODO : check le fonctionnement
-        x, y, r= self.relative_from_absolute(x, y, r)
-        self.log.info(f"Sending {x=}, {y=}, {r=}, {0.0}")
-        # time.sleep(10) # car enverra un msg que quand on veut que le robot bouge
-        self.sendSpeedCart(int(x), int(y), int(r), 0) # v not used yet
-        self.update_postion(x, y, r) # Voir en dynamique selon pos robot
+        x, y, r, _ = self.points[point_name]
+        x, y, r = self.relative_from_absolute(x, y, r)
+
+        with self.lock:
+            self.interrupted = False  # Reset avant chaque mouvement
+
+        self.log.info(f"Sending x={x}, y={y}, r={r}")
+        self.sendSpeedCart(int(x), int(y), int(r), 0)
+
+        # Simulation d'attente du mouvement (remplacer par logique réelle plus tard)
+        t0 = time.time()
+        while time.time() - t0 < self.config["run"]["instruction_delay"]:  # e.g. 2 sec
+            with self.lock:
+                if self.interrupted:
+                    self.log.warn("Mouvement interrompu par un obstacle.")
+                    return
+            time.sleep(0.05)
+
+        self.update_position(x, y, r)
+
+
 
     def follow_path(self):
         # TODO : need to be implemented by Guilpy

@@ -43,7 +43,8 @@ Enable I2C on Raspberry :
 ```bash
 sudo raspi-config
 # Interfaces
-# Enable I2C
+# Enable I2C for esp com
+# Enable serial, without enabling shell for the lidar
 ```
 
 Set up the config.yml file.

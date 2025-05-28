@@ -33,7 +33,7 @@ class LidarService(Thread):
         self.config = Config().get()
         self.log = Log("LidarService")
         try:
-            self.serial = Serial(self.config["serial"]["serial_port"], baudrate=self.config["i2c"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
+            self.serial = Serial(self.config["serial"]["serial_port"], baudrate=self.config["serial"]["baudrate"], timeout=None, bytesize=8, parity="N", stopbits=1)
         except Exception as e:
             self.log.error(f'Cannot connect to I2C {self.config["serial"]["serial_port"]}: {e}')
             if not self.config["detection"]["bypass_detection"]:
@@ -66,11 +66,14 @@ class LidarService(Thread):
         self.log.debug("Lidar ... ready to operate")
         while True:
             if not self.config["detection"]["bypass_detection"]:
+                self.log.debug("Lidar ... looking for real data")
                 self.serial.reset_input_buffer()
                 data = self.serial.read(250)
 
+                self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
 
                 parsed_data = parse_data(data)
+                self.log.debug(f"{parsed_data=}")
                 if not parsed_data:
                     self.log.error("No data received from LIDAR to I2C")
 
@@ -85,6 +88,7 @@ class LidarService(Thread):
                 for observer in self.observers:
                     observer.update(self.values)
             else:
+                self.log.debug("Lidar ... pass")
                 pass
 
 
@@ -97,6 +101,7 @@ class DetectionService:
         self.stop = False
         self.stop_time = 0
         self.lock = Lock()
+        self.log.info("DetectionService started")
 
 
     def update(self, points: list[float]):
@@ -119,6 +124,7 @@ class DetectionService:
         """
         with self.lock:
             treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
+            self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
             if treat_dist > 20:
