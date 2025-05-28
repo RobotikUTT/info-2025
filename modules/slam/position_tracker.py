@@ -15,7 +15,7 @@ class PositionTracker:
 
         # Check if it's connected
         if not self.myOtos.is_connected():
-            self.log.info("The device isn't connected to the system. Please check your connection", file=sys.stderr)
+            self.log.error("The device isn't connected to the system. Please check your connection", exception=sys.stderr)
             return
 
         self.myOtos.begin()
