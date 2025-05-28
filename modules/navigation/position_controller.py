@@ -113,13 +113,13 @@ class PositionController(Thread, ABC):
                 self.log.warn(f"Boucle trop lente ({delta_time:.4f}s), périodicité non respectée.")
 
 
-class PositionControllerLinear():
+class PositionControllerLinear(PositionController):
     """
     Contrôleur de position basé sur une correction linéaire simple.
     """
 
-    def __init__(self):
-        # super().__init__()
+    def __init__(self, detection_service):
+        super().__init__(detection_service)
         self.log = Log("PositionControllerLinear")
 
     def loop(self):
@@ -152,8 +152,8 @@ class PositionControllerLinear():
     Version zigzag
 """
 class PositionControllerZigZag(PositionController):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, detection_service):
+        super().__init__(detection_service)
         self.log = Log("PositionControllerZigZag")
         self.positionTracker = PositionTracker()
         self.speedCommunication = SpeedCommunication()
@@ -170,8 +170,8 @@ class PositionControllerZigZag(PositionController):
     Version PID
 """
 class PositionControllerPID(PositionController):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, detection_service):
+        super().__init__(detection_service)
         self.log = Log("PositionControllerPID")
 
     def _setup(self):
