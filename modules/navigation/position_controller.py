@@ -31,13 +31,13 @@ class PositionController(Thread, ABC):
         self.speedCommunication = SpeedCommunication()
         self.detection_service = detection_service
 
-        self.target_speed = self.config["speed"]
-        self.target_rotation_speed = self.config["rotation_speed"]
-        self.target_acceleration = self.config["acceleration"]
-        self.target_rotation_acceleration = self.config["rotation_acceleration"]
-        self.update_period = 1 / self.config["update_rate"]
-        self.error_pos = self.config["error_pos"]
-        self.error_angle = self.config["error_angle"]
+        self.target_speed = self.config["PositionController"]["speed"]
+        self.target_rotation_speed = self.config["PositionController"]["rotation_speed"]
+        self.target_acceleration = self.config["PositionController"]["acceleration"]
+        self.target_rotation_acceleration = self.config["PositionController"]["rotation_acceleration"]
+        self.update_period = 1 / self.config["PositionController"]["update_rate"]
+        self.error_pos = self.config["PositionController"]["error_pos"]
+        self.error_angle = self.config["PositionController"]["error_angle"]
 
         # Position cible initiale = position actuelle
         position = self.positionTracker.getCurrentPosition()
