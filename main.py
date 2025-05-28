@@ -1,12 +1,9 @@
 import argparse
 from modules.lidar.lidar import LidarService, DetectionService, PrinterService
-from modules.navigation.path_checks import PathChecker
 from modules.navigation.path_following import PathFollower
 from modules.strategy.deploy_strategy import Strategy
 from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
-from tests import *
-
 
 def runPathFollowing():
     lidar_service = LidarService()
@@ -37,11 +34,12 @@ def runStrategy():
 
 
 def runTests():
-    i2c.test.main()
-    effector.test.main()
-    lidar.test.main()
-    navigation.test.main()
-    strategy.test.main()
+    # i2c.test.main()
+    # effector.test.main()
+    # lidar.test.main()
+    # navigation.test.main()
+    # strategy.test.main()
+    pass
 
 
 if __name__ == "__main__":

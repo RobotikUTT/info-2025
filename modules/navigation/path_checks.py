@@ -14,7 +14,7 @@ class PathChecker(SpeedCommunication):
         path_obj = Path(self.config["run"]["path_file"])
         filename = path_obj.resolve()
 
-        super().__init__(detect_service)
+        super().__init__()
         self.path = self.load_path(filename)
 
         self.speeds = []

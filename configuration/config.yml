@@ -27,7 +27,7 @@ dimension:
     height: 2000 # en mm
 
 run:
-  map_file: "map.yml"
+  map_file: "configuration/map.yml"
   speed: 0.3 # quelle unité ?
   instruction_delay: 0.05 # en secondes
   position:
@@ -44,7 +44,7 @@ detection:
   bypass_detection: True # permet de ne pas crash si le lidar ne fonctionne pas
 
 strategy:
-  path: "strategy.yml"
+  path: "configuration/strategy.yml"
 
 PositionTracker:
   update_interval: 0.001
