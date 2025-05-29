@@ -38,6 +38,7 @@ Install necessary requirements :
 sudo apt install build-essential libsystemd-dev \
   && curl -LsSf https://astral.sh/uv/install.sh | sh \
   && uv sync
+sudo apt-get install python3-rpi.gpio
 ```
 
 Enable I2C on Raspberry :
