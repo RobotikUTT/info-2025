@@ -1,6 +1,6 @@
-- name: "zone_recolte"
-  x: 500
-  y: 1000
+- name: "test_ligne_x50"
+  x: 50
+  y: 0
   r: 0
 - name: "zone_depot"
   x: 1500

@@ -87,6 +87,16 @@ class PathFollower(SpeedCommunication):
         with self.lock:
             self.interrupted = False  # Reset avant chaque mouvement
 
+        # ====== ESSAI D'envoi d'interruption =======
+        # NE PAS DELETE LE CODE SUIVANT
+        # Envoi d'un STOP immédiat pour tester l'interruption
+        """
+        self.log.info("Envoi d'une commande STOP pour test d'interruption.")
+        self.sendSpeedCart(-1, -1, -1, 0)
+        time.sleep(0.1)  # petite pause pour laisser passer le STOP
+        """
+        # ====== FIN ESSAI D'envoi d'interruption =======
+
         self.log.info(f"Sending x={x}, y={y}, r={r}")
         self.sendSpeedCart(int(x), int(y), int(r), 0)
 
@@ -106,4 +116,4 @@ class PathFollower(SpeedCommunication):
     def follow_path(self):
         # TODO : need to be implemented by Guilpy
         # interface pour le moment
-        self.run_to("zone_recolte")
+        self.run_to("test_ligne_x50")

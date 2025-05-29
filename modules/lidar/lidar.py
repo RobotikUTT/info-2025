@@ -66,11 +66,11 @@ class LidarService(Thread):
         self.log.debug("Lidar ... ready to operate")
         while True:
             if not self.config["detection"]["bypass_detection"]:
-                self.log.debug("Lidar ... looking for real data")
+                # self.log.debug("Lidar ... looking for real data")
                 self.serial.reset_input_buffer()
                 data = self.serial.read(250)
 
-                self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
+                # self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
 
                 parsed_data = parse_data(data)
                 self.log.debug(f"{parsed_data=}")
@@ -88,7 +88,7 @@ class LidarService(Thread):
                 for observer in self.observers:
                     observer.update(self.values)
             else:
-                self.log.debug("Lidar ... pass")
+                # self.log.debug("Lidar ... pass")
                 pass
 
 
