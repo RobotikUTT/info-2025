@@ -6,6 +6,33 @@ from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
 import RPi.GPIO as GPIO
 import time
+import pygame
+import threading
+
+def show_score(score):
+    pygame.init()
+    screen = pygame.display.set_mode((300, 200))
+    pygame.display.set_caption('Score')
+    font = pygame.font.Font(None, 200)
+    running = True
+    while running:
+        screen.fill((0, 0, 0))
+
+        # Rendre le texte sur une surface
+        text_surface = font.render(str(score), True, (255, 255, 255))
+        # Rotation à 90 degrés
+        rotated_surface = pygame.transform.rotate(text_surface, 270)  # angle en degrés, sens horaire
+
+        # Position pour centrer le texte tourné sur l'écran
+        rect = rotated_surface.get_rect(center=(150, 100))  # centre écran 300x200
+
+        screen.blit(rotated_surface, rect)
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+    pygame.quit()
 
 def run_lidar_detection():
     lidar_service = LidarService()
@@ -110,10 +137,17 @@ if __name__ == "__main__":
     group.add_argument('--follow', action='store_true', help='Run path following mode')
     group.add_argument('--lidar', action='store_true', help='Run lidar mode detection')
 
+    # Ajouté en dehors du groupe exclusif
+    parser.add_argument('--score', type=int, help='Score à afficher dans la GUI')
     args = parser.parse_args()
+
 
     s = start()
     if s:
+        # Si --score est fourni, on lance la fenêtre Tkinter dans un thread séparé
+        if args.score is not None:
+            threading.Thread(target=show_score, args=(args.score,), daemon=True).start()
+
         if args.run:
             runStrategy()
         elif args.test:
