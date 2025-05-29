@@ -4,13 +4,14 @@ import time
 
 def main():
     eff = EffectorsControl()
-    while True:
-        for i in range(4):
-            eff.magnetize(i)
-        time.sleep(3)
-        for i in range(4):
-            eff.demagnetize(i)
-        time.sleep(3)
+    eff.set_banner_close()
+    time.sleep(300)
+    eff.set_banner_open()
+    time.sleep(300)
+    eff.take_everything()
+    time.sleep(300)
+    eff.put_down_everything()
+    time.sleep(300)
 
 
 if __name__ == "__main__":
