@@ -1,9 +1,9 @@
-from modules.lidar.lidar import LidarService, PrinterService
+from modules.lidar.lidar import LidarService, DetectionService
 
 
 def main():
     lidar_service = LidarService()
-    lidar_service.observers += [PrinterService()]
+    lidar_service.observers += [DetectionService()]
     lidar_service.start()
     lidar_service.join()
 
