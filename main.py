@@ -60,6 +60,9 @@ def runTests():
     pass
 
 def start() -> bool:
+    """
+    Permet de lancer le robot lorsque la tirette est enlevée
+    """
     # ========== Set up GPIO pin ==========
     # Set the GPIO mode to BCM
     GPIO.setmode(GPIO.BCM)
@@ -74,6 +77,11 @@ def start() -> bool:
     last_change_time = time.time()
 
     try:
+        current_state = GPIO.input(SWITCH_PIN)
+        if current_state == GPIO.LOW:
+            print(f"The limit switch: Tirette armée")
+            print(f"========== READY TO ROCK ==========")
+
         while True:
             current_state = GPIO.input(SWITCH_PIN)
             current_time = time.time()
