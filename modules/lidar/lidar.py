@@ -73,7 +73,7 @@ class LidarService(Thread):
                 # self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
 
                 parsed_data = parse_data(data)
-                self.log.debug(f"{parsed_data=}")
+                # self.log.debug(f"{parsed_data=}")
                 if not parsed_data:
                     self.log.error("No data received from LIDAR to I2C")
 
@@ -124,7 +124,7 @@ class DetectionService:
         """
         with self.lock:
             treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
-            self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
+            # self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
             if treat_dist > 20:
