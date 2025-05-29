@@ -9,7 +9,7 @@ from typing import Optional
 class PositionTracker:
     def __init__(self):
         self.log = Log("PositionTracker")
-        self.config = Config("PositionTracker")
+        self.config = Config().get()
 
         self.myOtos = qwiic_otos.QwiicOTOS()
 
