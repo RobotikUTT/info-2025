@@ -106,8 +106,10 @@ def start() -> bool:
     try:
         current_state = GPIO.input(SWITCH_PIN)
         if current_state == GPIO.LOW:
-            print(f"The limit switch: Tirette armée")
+            print(f"TIRETTE: The limit switch: Tirette armée")
             print(f"========== READY TO ROCK ==========")
+        else:
+            print("TIRETTE: Veuillez armer la tirette")
 
         while True:
             current_state = GPIO.input(SWITCH_PIN)
@@ -115,11 +117,12 @@ def start() -> bool:
 
             if current_state != prev_switch_state and (current_time - last_change_time) >= DEBOUNCE_TIME_S:
                 if current_state == GPIO.HIGH:
-                    print("The limit switch: Tirette retirée")
+                    print("TIRETTE: The limit switch: Tirette retirée")
                     return True
 
                 else:
-                    print("The limit switch: Tirette armée")
+                    print("TIRETTE: The limit switch: Tirette armée")
+                    print(f"========== READY TO ROCK ==========")
 
                 prev_switch_state = current_state
                 last_change_time = current_time
