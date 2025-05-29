@@ -1,6 +1,6 @@
 # info-2025
 
-### Architecture 
+### Architecture
 
 ```
 info-2025/
@@ -32,7 +32,8 @@ info-2025/
 
 ### Installation
 
-Install necessary requirements : 
+Install necessary requirements :
+
 ```bash
 sudo apt install build-essential libsystemd-dev \
   && curl -LsSf https://astral.sh/uv/install.sh | sh \
@@ -40,6 +41,7 @@ sudo apt install build-essential libsystemd-dev \
 ```
 
 Enable I2C on Raspberry :
+
 ```bash
 sudo raspi-config
 # Interfaces
@@ -49,7 +51,8 @@ sudo raspi-config
 
 Set up the config.yml file.
 
-To install all libs needed without keeping temp artefacts : 
+To install all libs needed without keeping temp artefacts :
+
 ```bash
 uv venv # to create the virtual env
 uv pip install -e .
@@ -72,7 +75,8 @@ uv run ruff format
 
 ##### Modules
 
-Chaque classe de module doit être crée à partir de `template.py` afin d'initialiser le logger et la config.
+Chaque classe de module doit être créé à partir de `template.py` afin d'initialiser le logger et la
+config.
 
 ##### Logging
 
@@ -80,8 +84,8 @@ Après avoir initialisé le logger comme suit en spécifiant le nom de la classe
 `log = Log("TestPlugin")`
 
 On peut utiliser ces 4 méthodes :
-```python
 
+```python
 log.info("info message")
 log.debug("debug message")
 log.warn("warning message")

@@ -5,6 +5,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+.idea/
 
 
 # Byte-compiled / optimized / DLL files
