@@ -75,7 +75,7 @@ class PathFollower(SpeedCommunication):
             if self.detection_service and self.detection_service.stop:
                 self.interrupted = True
                 self.log.warn("Obstacle détecté ! Envoi d'un STOP d'urgence.")
-                self.sendSpeedCart(-1, -1, -1)  # STOP immédiat
+                self.sendSpeedCart(-1, -1, -1, 0)  # STOP immédiat
                 break
             time.sleep(0.05)  # Surveillance rapide mais non bloquante
 
@@ -106,6 +106,8 @@ class PathFollower(SpeedCommunication):
             with self.lock:
                 if self.interrupted:
                     self.log.warn("Mouvement interrompu par un obstacle.")
+                    self.sendSpeedCart(-1, -1, -1, 0)
+
                     return
             time.sleep(0.05)
 
