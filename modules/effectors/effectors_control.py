@@ -1,6 +1,7 @@
 from modules.communication.i2c_communication import I2CCommunication
 from utils.config import Config
 from utils.log import Log
+from smbus2 import SMBus
 
 """
 Contrôle des effecteurs via I2C vers l'ESP :
@@ -9,9 +10,16 @@ Contrôle des effecteurs via I2C vers l'ESP :
 """
 
 class EffectorsControl(I2CCommunication):
-    def __init__(self):
+    def __init__(self, device_name: str):
         super().__init__("esp_effectors")
-        self.config = Config().get()
+        self.bus = SMBus(
+            self.config["i2c_mapping"][device_name]["bus"]
+        )  # I2C bus number
+        self.address = self.config["i2c_mapping"][device_name][
+            "address"
+        ]  # I2C address of the device
+
+        # self.config = Config().get()
         self.log = Log("EffectorsControl")
 
     def put_down_everything(self):

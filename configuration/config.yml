@@ -14,7 +14,7 @@ i2c_mapping:
     bus: 2
   esp_effectors:
     address: 0x20
-    bus: 2
+    bus: 1
   esp_steppers:
     address: 0x08
     bus: 1

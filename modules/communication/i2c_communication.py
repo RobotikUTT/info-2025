@@ -7,8 +7,8 @@ from utils.log import Log
 # test
 class I2CCommunication:
     def __init__(self, device_name: str):
+        self.log = Log("EffectorsControl")
         self.config = Config().get()
-        self.log = Log("I2CCommunication")
         self.bus = SMBus(
             self.config["i2c_mapping"][device_name]["bus"]
         )  # I2C bus number
