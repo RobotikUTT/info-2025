@@ -13,7 +13,8 @@ dependencies = [
     "smbus2>=0.5.0",
     "systemd>=0.17.1",
     "jsonschema",
-    "sparkfun-qwiic-otos @ git+https://github.com/sparkfun/Qwiic_OToS_Py.git"
+    "sparkfun-qwiic-otos @ git+https://github.com/sparkfun/Qwiic_OToS_Py.git",
+    "rpi-gpio==0.7.1"
 ]
 
 [dependency-groups]

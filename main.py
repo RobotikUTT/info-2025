@@ -4,6 +4,7 @@ from modules.navigation.path_following import PathFollower
 from modules.strategy.deploy_strategy import Strategy
 from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
+import RPi.GPIO as GPIO
 import time
 
 def run_lidar_detection():
@@ -58,6 +59,40 @@ def runTests():
     # strategy.test.main()
     pass
 
+def start() -> bool:
+    # ========== Set up GPIO pin ==========
+    # Set the GPIO mode to BCM
+    GPIO.setmode(GPIO.BCM)
+    # Define the GPIO pin for your button
+    SWITCH_PIN = 16
+    # Set the initial state and pull-up resistor for the button
+    GPIO.setup(SWITCH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    # Define debounce time in seconds (e.g., 0.2s = 200ms)
+    DEBOUNCE_TIME_S = 0.2
+    # Initialize previous state
+    prev_switch_state = GPIO.input(SWITCH_PIN)
+    last_change_time = time.time()
+
+    try:
+        while True:
+            current_state = GPIO.input(SWITCH_PIN)
+            current_time = time.time()
+
+            if current_state != prev_switch_state and (current_time - last_change_time) >= DEBOUNCE_TIME_S:
+                if current_state == GPIO.HIGH:
+                    print("The limit switch: Tirette retirée")
+                    return True
+
+                else:
+                    print("The limit switch: Tirette armée")
+
+                prev_switch_state = current_state
+                last_change_time = current_time
+
+            time.sleep(0.01)  # Small delay to avoid high CPU usage
+
+    except KeyboardInterrupt:
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Robot control program entry point.")
@@ -69,11 +104,13 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.run:
-        runStrategy()
-    elif args.test:
-        runTests()
-    elif args.follow:
-        runPathFollowing()
-    elif args.lidar:
-        run_lidar_detection()
+    s = start()
+    if s:
+        if args.run:
+            runStrategy()
+        elif args.test:
+            runTests()
+        elif args.follow:
+            runPathFollowing()
+        elif args.lidar:
+            run_lidar_detection()
