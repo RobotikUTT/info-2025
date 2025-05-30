@@ -79,6 +79,20 @@ class PathFollower(SpeedCommunication):
                 break
             time.sleep(0.05)  # Surveillance rapide mais non bloquante
 
+    def wait(self):
+        """
+        Keep the process in the loop until the movement is finished on the ESP
+        It prevent path execution interruption before going to the next one.
+        """
+        while 1:
+            raw = self.read(5)
+            raw.strip()
+            if "FALSE" in raw: # TRUE si en mouvement, FALSE sinon
+                return
+            # self.log.debug(f"Received {raw}")
+            time.sleep(0.05)
+        self.log.debug(f"Mouvement terminé")
+
     def run_to(self, point_name: str):
         self.log.debug(f"Follow path: {self.points[point_name]=}")
         x, y, r, _ = self.points[point_name]
@@ -86,16 +100,6 @@ class PathFollower(SpeedCommunication):
 
         with self.lock:
             self.interrupted = False  # Reset avant chaque mouvement
-
-        # ====== ESSAI D'envoi d'interruption =======
-        # NE PAS DELETE LE CODE SUIVANT
-        # Envoi d'un STOP immédiat pour tester l'interruption
-        """
-        self.log.info("Envoi d'une commande STOP pour test d'interruption.")
-        self.sendSpeedCart(-1, -1, -1, 0)
-        time.sleep(0.1)  # petite pause pour laisser passer le STOP
-        """
-        # ====== FIN ESSAI D'envoi d'interruption =======
 
         self.log.info(f"Sending x={x}, y={y}, r={r}")
         self.sendSpeedCart(int(x), int(y), int(r), 0)
@@ -116,6 +120,9 @@ class PathFollower(SpeedCommunication):
 
 
     def follow_path(self):
-        # TODO : need to be implemented by Guilpy
         # interface pour le moment
+        self.run_to("test_ligne_y50")
+        self.wait()
         self.run_to("test_ligne_x50")
+        self.wait()
+        #self.run_to("T3")

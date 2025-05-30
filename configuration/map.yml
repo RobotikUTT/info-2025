@@ -1,8 +1,32 @@
 - name: "test_ligne_x50"
-  x: 50
+  x: 75
+  y: 0
+  r: 0
+- name: "test_ligne_y50"
+  x: 75
   y: 0
   r: 0
 - name: "zone_depot"
   x: 1500
   y: 2000
   r: 180
+- name: "T1"
+  x: 25
+  y: 0
+  r: 0
+- name: "T2"
+  x: -15
+  y: -15
+  r: 0
+- name: "T3"
+  x: -25
+  y: 0
+  r: 0
+- name: "P1"
+  x: 25
+  y: 0
+  r: 0
+- name: "P2"
+  x: -25
+  y: 0
+  r: 0
