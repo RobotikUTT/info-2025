@@ -30,3 +30,7 @@
   x: -25
   y: 0
   r: 0
+- name: "first_points"
+  x: 0
+  y: 100
+  r: 0

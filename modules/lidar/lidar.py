@@ -68,7 +68,7 @@ class LidarService(Thread):
             if not self.config["detection"]["bypass_detection"]:
                 # self.log.debug("Lidar ... looking for real data")
                 self.serial.reset_input_buffer()
-                data = self.serial.read(1000) # old 250
+                data = self.serial.read(15000) # old 250
 
                 # self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
 
@@ -127,7 +127,8 @@ class DetectionService:
             # self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
-            if treat_dist > 30: # 30 TODO voir efficacité
+            self.log.debug(f"{treat_dist=} points detected")
+            if treat_dist > 80: # 30 TODO voir efficacité
                 self.stop_time = time.time()
                 self.stop = True
                 self.log.info("### STOP : Obstacle detected ###")

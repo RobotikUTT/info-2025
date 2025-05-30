@@ -18,6 +18,7 @@ class SpeedCommunication(I2CCommunication):
               x (float): Composante de la vitesse linéaire selon l'axe X.
               y (float): Composante de la vitesse linéaire selon l'axe Y.
               rot (float): Vitesse de rotation (vitesse angulaire autour de l'axe Z).
+              vit (float): vitesse à passer (non utilisé)
 
           Returns:
               None

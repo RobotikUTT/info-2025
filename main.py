@@ -118,6 +118,7 @@ def start() -> bool:
             if current_state != prev_switch_state and (current_time - last_change_time) >= DEBOUNCE_TIME_S:
                 if current_state == GPIO.HIGH:
                     print("TIRETTE: The limit switch: Tirette retirée")
+                    time.sleep(2) # to avoid detection
                     return True
 
                 else:

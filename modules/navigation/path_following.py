@@ -88,10 +88,11 @@ class PathFollower(SpeedCommunication):
             raw = self.read(5)
             raw.strip()
             if "FALSE" in raw: # TRUE si en mouvement, FALSE sinon
+                self.log.debug(f"Mouvement terminé")
                 return
             # self.log.debug(f"Received {raw}")
             time.sleep(0.05)
-        self.log.debug(f"Mouvement terminé")
+
 
     def run_to(self, point_name: str):
         self.log.debug(f"Follow path: {self.points[point_name]=}")
@@ -121,8 +122,8 @@ class PathFollower(SpeedCommunication):
 
     def follow_path(self):
         # interface pour le moment
-        self.run_to("test_ligne_y50")
-        self.wait()
-        self.run_to("test_ligne_x50")
-        self.wait()
+        self.run_to("first_points")
+        # self.wait()
+        #self.run_to("test_ligne_x50")
+        #self.wait()
         #self.run_to("T3")
