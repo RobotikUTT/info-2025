@@ -10,7 +10,7 @@ class SpeedCommunication(I2CCommunication):
         self.log = Log("SpeedCommunication")
 
 
-    def sendSpeedCart(self, x: float, y: float, rot: float, vit: float):
+    def sendSpeedCart(self, x: float, y: float, rot: float, vit: float=None):
         """
           Envoie les vitesses du robot sous forme cartésienne.
 
@@ -33,5 +33,5 @@ class SpeedCommunication(I2CCommunication):
         # TODO : PATCH in order to send less than 32 bytes, pass .3f to .2f but can be adjusted
         # The proper way is to do struct binary packing but it needs an unpacking on the ESP
         # Not the time to do it during the competition
-        self.log.debug(f"Taille envoyé : {len(sendString.encode('utf-8'))} bytes")
+        # self.log.debugg(f"Taille envoyé : {len(sendString.encode('utf-8'))} bytes")
         self.write(sendString)

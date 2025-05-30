@@ -40,9 +40,9 @@ serial:
   baudrate: 230400
 
 detection:
-  stop_threshold: 500 # en mm
+  stop_threshold: 700 # en mm
   bypass_detection: False # permet de ne pas crash si le lidar ne fonctionne pas quand set à True
-  coeff_nb_pts: 1000000
+  coeff_nb_pts: 10000000
 
 strategy:
   path: "configuration/strategy.yml"
@@ -51,7 +51,7 @@ PositionTracker:
   update_interval: 0.001
 
 PositionController:
-  speed: 0.5                      # Vitesse cible (m/s)
+  speed: 0.2                     # Vitesse cible (m/s)
   rotation_speed: 1.0            # Vitesse angulaire cible (rad/s)
   acceleration: 0.2              # Accélération cible (m/s²)
   rotation_acceleration: 0.5    # Accélération angulaire cible (rad/s²)

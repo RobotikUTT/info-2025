@@ -63,17 +63,17 @@ class LidarService(Thread):
             - Les observateurs typiques incluent un service de détection d'obstacle (`DetectionService`)
               et un service d'affichage (`Printer`).
         """
-        self.log.debug("Lidar ... ready to operate")
+        # self.log.debugg("Lidar ... ready to operate")
         while True:
             if not self.config["detection"]["bypass_detection"]:
-                # self.log.debug("Lidar ... looking for real data")
+                # # self.log.debugg("Lidar ... looking for real data")
                 self.serial.reset_input_buffer()
                 data = self.serial.read(2000)
 
-                # self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
+                # # self.log.debugg(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
 
                 parsed_data = parse_data(data)
-                # self.log.debug(f"{parsed_data=}")
+                # # self.log.debugg(f"{parsed_data=}")
                 if not parsed_data:
                     self.log.error("No data received from LIDAR to I2C")
 
@@ -88,7 +88,7 @@ class LidarService(Thread):
                 for observer in self.observers:
                     observer.update(self.values)
             else:
-                # self.log.debug("Lidar ... pass")
+                # # self.log.debugg("Lidar ... pass")
                 pass
 
 
@@ -125,16 +125,20 @@ class DetectionService:
         """
         with self.lock:
             treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
-            treat_dist -= 14
+            treat_dist -= 44
             self.log.debug(f"Total pts under threashold: {treat_dist}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
+                self.log.info("### STOP : disabled ###")
             if self.threshold != 0:
                 self.log.debug(f"nb_pts_threashold: {self.coeff_nb_pts/self.threshold**2}")
                 if treat_dist > self.coeff_nb_pts/self.threshold**2:
+                    if not self.stop:
+                        self.log.info("### STOP : Obstacle detected ###")
                     self.stop_time = time.time()
                     self.stop = True
-                    self.log.info("### STOP : Obstacle detected ###")
+
+
             
 class PrinterService:
     # Visualisation des données du LIDAR que pour le debug car ralentit la rasp

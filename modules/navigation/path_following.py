@@ -80,7 +80,7 @@ class PathFollower(SpeedCommunication):
             time.sleep(0.05)  # Surveillance rapide mais non bloquante
 
     def run_to(self, point_name: str):
-        self.log.debug(f"Follow path: {self.points[point_name]=}")
+        # self.log.debugg(f"Follow path: {self.points[point_name]=}")
         x, y, r, _ = self.points[point_name]
         x, y, r = self.relative_from_absolute(x, y, r)
 
