@@ -35,7 +35,7 @@ class PositionTracker:
         # Ajout pour limiter la fréquence de mise à jour
         self._last_position: Optional[Position] = None
         self._last_update_time = 0
-        self._update_interval = self.config["update_interval"]
+        self._update_interval = self.config["PositionTracker"]["update_interval"]
 
     def getCurrentPosition(self) -> Position:
         now = time.time()

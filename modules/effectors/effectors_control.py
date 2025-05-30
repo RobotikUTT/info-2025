@@ -24,20 +24,20 @@ class EffectorsControl(I2CCommunication):
 
     def put_down_everything(self):
         """ID 0, state 0 → putDownEverything"""
-        self.log.debug("Envoi de la commande putDownEverything")
+        # self.log.debugg("Envoi de la commande putDownEverything")
         self.write("0 0")
 
     def take_everything(self):
         """ID 0, state 1 → takeEverything"""
-        self.log.debug("Envoi de la commande takeEverything")
+        # self.log.debugg("Envoi de la commande takeEverything")
         self.write("1 0")
 
     def set_banner_close(self):
         """ID 1, state 0 → setBannerClose"""
-        self.log.debug("Envoi de la commande setBannerClose")
+        # self.log.debugg("Envoi de la commande setBannerClose")
         self.write("0 1")
 
     def set_banner_open(self):
         """ID 1, state 1 → setBannerOpen"""
-        self.log.debug("Envoi de la commande setBannerOpen")
+        # self.log.debugg("Envoi de la commande setBannerOpen")
         self.write("1 1")

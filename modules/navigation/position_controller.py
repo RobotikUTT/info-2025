@@ -18,7 +18,7 @@ class PositionController(Thread, ABC):
     Force à implémenter loop en fonction du type de controller.
     """
 
-    def __init__(self, detection_service):
+    def __init__(self, lidar_service, detection_service):
         super().__init__()
         self.config = Config().get()
         self.log = Log("PositionController")
@@ -30,6 +30,7 @@ class PositionController(Thread, ABC):
         self.positionTracker = PositionTracker()
         self.speedCommunication = SpeedCommunication()
         self.detection_service = detection_service
+        lidar_service.observers += [detection_service]
 
         self.target_speed = self.config["PositionController"]["speed"]
         self.target_rotation_speed = self.config["PositionController"]["rotation_speed"]
@@ -88,6 +89,7 @@ class PositionController(Thread, ABC):
             pre_time = time.time()
 
             if self.moving:
+                # self.log.debugg(f"Detection {self.detection_service.stop}")
                 try:
                     with self.lock:
                         if self.isArrived():
@@ -118,20 +120,28 @@ class PositionControllerLinear(PositionController):
     Contrôleur de position basé sur une correction linéaire simple.
     """
 
-    def __init__(self, detection_service):
-        super().__init__(detection_service)
+    def __init__(self, lidar_service, detection_service):
+        super().__init__(lidar_service, detection_service)
         self.log = Log("PositionControllerLinear")
 
     def loop(self):
         current_pos = self.positionTracker.getCurrentPosition()
+        self.log.debug(f"Current position : {current_pos}")
 
         delta_pos = self.target_position.minus(current_pos)
-        vect_speed = delta_pos.normalize()
+        vect_speed = delta_pos.normalize().rotate(-current_pos.w)
 
-        vect_speed.multiplyPos(self.target_speed)
+        current_vel = self.positionTracker.getCurrentVelocity()
+        current_speed = current_vel.norm()
+        self.log.debug(f"Current speed : {current_speed}")
+        speed = self.target_speed + (self.target_speed - current_speed) * self.target_acceleration
+
+        vect_speed.multiplyPos(speed)
         vect_speed.multiplyAngle(self.target_rotation_speed)
 
-        self.speedCommunication.sendSpeedCart(*vect_speed.get())
+        vec_cpy = vect_speed.copy()
+        # self.log.debugg(f"Valeurs : {vec_cpy.x}, {vec_cpy.y}, {vec_cpy.w}")
+        self.speedCommunication.sendSpeedCart(vec_cpy.x, vec_cpy.y, 0.0)
 
     def _setup(self):
         pass
@@ -227,7 +237,7 @@ class PositionControllerPID(PositionController):
 
             self.current_speed_w = control_w
 
-            self.speedCommunication.sendSpeedCart(self.current_speed_x, self.current_speed_y, self.current_speed_w)
+            self.speedCommunication.sendSpeedCart(self.current_speed_x, self.current_speed_y, 0) # self.current_speed_w)
         except Exception as e:
             self.log.error(f"Error in run loop", e)
 
