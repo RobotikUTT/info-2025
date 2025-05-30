@@ -41,12 +41,13 @@ def runPathFollowing():
 def runStrategy(team):
     ld = LidarService()
     ld.start()
-    position_controller = PositionControllerLinear(ld, DetectionService(), team)
+    position_controller = PositionControllerLinear(ld, DetectionService())
+    position_controller.speedCommunication.sendSpeedCart(-0.5 * 0.523598, -0.5)
     position_controller.start()
 
     effector_controller = EffectorsControl("esp_effectors")
 
-    strategy = Strategy(position_controller, effector_controller, )
+    strategy = Strategy(position_controller, effector_controller, team)
     strategy.start()
     strategy.join()
 
@@ -71,6 +72,8 @@ if __name__ == "__main__":
     # Ajouté en dehors du groupe exclusif
     parser.add_argument('--score', type=int, help='Score à afficher dans la GUI')
     args = parser.parse_args()
+
+    EffectorsControl("esp_effectors").set_banner_close()
 
     if start():
         team = choose_team() # TRUE si jaune, False sinon

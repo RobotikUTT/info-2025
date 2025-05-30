@@ -47,6 +47,22 @@ def verify(structure):
                     },
                     "required": ["wait"],
                     "additionalProperties": False
+                },
+                {
+                    "properties": {
+                        "set_pos": {
+                            "type": "object",
+                            "properties": {
+                                "x": {"type": "number"},
+                                "y": {"type": "number"},
+                                "w": {"type": "number"}
+                            },
+                            "required": ["x", "y", "w"],
+                            "additionalProperties": False
+                        }
+                    },
+                    "required": ["set_pos"],
+                    "additionalProperties": False
                 }
             ]
         }

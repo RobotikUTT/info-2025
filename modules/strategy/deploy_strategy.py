@@ -5,6 +5,7 @@ from threading import Thread
 from queue import Queue
 import time
 import modules.strategy.structure_validator as structure_validator
+from utils.position import Position
 
 class Strategy(Thread):
     def __init__(self, position_controller, effector_controller, jaune=True):
@@ -64,6 +65,11 @@ class Strategy(Thread):
         else:
             self.log.info("Stratégie terminée.")
 
+    def set_pos(self, x, y, w):
+        self.log.info(f"set_pos by x:{x}, y:{y}, w:{w}")
+        self.position_controller.positionTracker.setCurrentPosition(Position(x, y, w))
+        self.nextStep()
+
     def redirect(self, step):
         self.log.info(f"strategy step : {step}")
         if "move" in step:
@@ -93,6 +99,11 @@ class Strategy(Thread):
             self.nextStep()
         elif "wait" in step:
             self.wait(step["wait"])
+
+        elif "set_pos" in step:
+            pos = step["set_pos"]
+            self.set_pos(pos["x"], pos["y"], pos["w"])
+
 
         else:
             self.log.warn(f"Étape inconnue ou non gérée : {step}")

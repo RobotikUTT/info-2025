@@ -62,7 +62,7 @@ def start() -> bool:
                 prev_switch_state = current_state
                 last_change_time = current_time
 
-            time.sleep(0.01)  # Small delay to avoid high CPU usage
+            sleep(0.01)  # Small delay to avoid high CPU usage
 
     except KeyboardInterrupt:
         GPIO.cleanup()

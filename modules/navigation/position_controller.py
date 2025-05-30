@@ -124,7 +124,7 @@ class PositionControllerLinear(PositionController):
 
     def loop(self):
         current_pos = self.positionTracker.getCurrentPosition()
-        # self.log.debug(f"Current position : {current_pos}")
+        self.log.debug(f"Current position : {current_pos}")
 
         delta_pos = self.target_position.minus(current_pos)
         vect_speed = delta_pos.normalize().rotate(-current_pos.w)

@@ -1,7 +1,9 @@
 # exemple de strategie
 - move :
-    type : "named"
-    target : "zone_recolte"
+    type : "relative"
+    x : 0
+    y : 0.2
+    w :
 - effect : "set_banner_close"
 - move:
     type : "relative"

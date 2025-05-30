@@ -53,7 +53,7 @@ PositionTracker:
   update_interval: 0.001
 
 PositionController:
-  speed: 0.2                     # Vitesse cible (m/s)
+  speed: 1.0                     # Vitesse cible (m/s)
   rotation_speed: 1.0            # Vitesse angulaire cible (rad/s)
   acceleration: 0.2              # Accélération cible (m/s²)
   rotation_acceleration: 0.5    # Accélération angulaire cible (rad/s²)
