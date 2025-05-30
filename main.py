@@ -1,38 +1,14 @@
 import argparse
-from modules.lidar.lidar import LidarService, DetectionService, PrinterService
+from modules.lidar.lidar import LidarService, DetectionService
 from modules.navigation.path_following import PathFollower
 from modules.strategy.deploy_strategy import Strategy
 from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
-from utils.tirette import start
+from modules.management.tirette import start
+from modules.management.scoring import show_score
 import time
-import pygame
 import threading
 
-def show_score(score):
-    pygame.init()
-    screen = pygame.display.set_mode((300, 200))
-    pygame.display.set_caption('Score')
-    font = pygame.font.Font(None, 200)
-    running = True
-    while running:
-        screen.fill((0, 0, 0))
-
-        # Rendre le texte sur une surface
-        text_surface = font.render(str(score), True, (255, 255, 255))
-        # Rotation à 90 degrés
-        rotated_surface = pygame.transform.rotate(text_surface, 270)  # angle en degrés, sens horaire
-
-        # Position pour centrer le texte tourné sur l'écran
-        rect = rotated_surface.get_rect(center=(150, 100))  # centre écran 300x200
-
-        screen.blit(rotated_surface, rect)
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-    pygame.quit()
 
 def run_lidar_detection():
     lidar_service = LidarService()
