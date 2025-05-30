@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
-from time import time
+from time import time, sleep
 
 LED_PIN = 13
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
 SWITCH_PIN = 26            # GPIO du switch 2 positions
@@ -62,7 +63,7 @@ def start() -> bool:
                 prev_switch_state = current_state
                 last_change_time = current_time
 
-            time.sleep(0.01)  # Small delay to avoid high CPU usage
+            sleep(0.01)  # Small delay to avoid high CPU usage
 
     except KeyboardInterrupt:
         GPIO.cleanup()
