@@ -4,7 +4,7 @@ from modules.navigation.path_following import PathFollower
 from modules.strategy.deploy_strategy import Strategy
 from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
-from modules.management.tirette import start
+from modules.management.tirette import start, choose_team
 from modules.management.scoring import show_score
 import time
 import threading
@@ -76,6 +76,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if start():
+        team = choose_team() # TRUE si jaune, False sinon
         # Si --score est fourni, on lance la fenêtre Tkinter dans un thread séparé
         if args.score is not None:
             threading.Thread(target=show_score, args=(args.score,), daemon=True).start()

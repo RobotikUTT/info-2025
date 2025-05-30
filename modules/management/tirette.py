@@ -4,6 +4,22 @@ from time import time
 LED_PIN = 13
 GPIO.setup(LED_PIN, GPIO.OUT)
 
+SWITCH_PIN = 26            # GPIO du switch 2 positions
+DEBOUNCE_TIME_S = 0.2      # Anti-rebond (en secondes)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(SWITCH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+def choose_team():
+    # Return True si Jaune False si bleu
+    current_state = GPIO.input(SWITCH_PIN)
+    if current_state == GPIO.HIGH:
+        print("INTERRUPTEUR: Position HAUTE : team JAUNE")
+        return True
+    else:
+        print("INTERRUPTEUR: Position BASSE : team BLEU")
+        return False
+
+
 def start() -> bool:
     """
     Permet de lancer le robot lorsque la tirette est enlevée
