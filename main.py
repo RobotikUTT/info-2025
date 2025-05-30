@@ -38,15 +38,15 @@ def runPathFollowing():
     pathFollower.follow_path()
 
 
-def runStrategy():
+def runStrategy(team):
     ld = LidarService()
     ld.start()
-    position_controller = PositionControllerLinear(ld, DetectionService())
+    position_controller = PositionControllerLinear(ld, DetectionService(), team)
     position_controller.start()
 
     effector_controller = EffectorsControl("esp_effectors")
 
-    strategy = Strategy(position_controller, effector_controller)
+    strategy = Strategy(position_controller, effector_controller, )
     strategy.start()
     strategy.join()
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
             threading.Thread(target=show_score, args=(args.score,), daemon=True).start()
 
         if args.run:
-            runStrategy()
+            runStrategy(team)
         elif args.test:
             runTests()
         elif args.follow:

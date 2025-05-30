@@ -1,0 +1,24 @@
+# exemple de strategie
+- move :
+    type : "named"
+    target : "zone_recolte"
+- effect : "set_banner_close"
+- move:
+    type : "relative"
+    x : 0
+    y : 0
+    w : 3.14 # equivalent à tourner d'un demi tour
+- effect : "set_banner_open"
+- wait : 1.0
+- move :
+    type : "absolute"
+    x : 100
+    y : 100
+    w : 0
+- wait : 1.0 # en secondes
+- effect : "take_everything"
+- wait : 1.0
+- move :
+    type : "named"
+    target : "zone_depot"
+- effect : "put_down_everything"

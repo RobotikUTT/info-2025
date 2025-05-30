@@ -45,7 +45,9 @@ detection:
   coeff_nb_pts: 20000000
 
 strategy:
-  path: "configuration/strategy.yml"
+  path:
+    jaune: "configuration/strategy_jaune.yml"
+    bleu: "configuration/strategy_bleu.yml"
 
 PositionTracker:
   update_interval: 0.001

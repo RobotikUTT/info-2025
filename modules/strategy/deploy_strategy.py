@@ -7,11 +7,11 @@ import time
 import modules.strategy.structure_validator as structure_validator
 
 class Strategy(Thread):
-    def __init__(self, position_controller, effector_controller):
+    def __init__(self, position_controller, effector_controller, jaune=True):
         super().__init__()
         self.log = Log("Strategy")
         self.config = Config().get()
-        self.strategy = load_yml(self.config["strategy"]["path"])
+        self.strategy = load_yml(self.config["strategy"]["path"]["jaune" if jaune else "bleu"])
         self.log.info(f"Stratégie chargée : {self.strategy}")
         self.map = load_yml(self.config["run"]["map_file"])
         self.log.info(f"Map chargée : {self.map}")
