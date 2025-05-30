@@ -40,9 +40,9 @@ serial:
   baudrate: 230400
 
 detection:
-  stop_threshold: 700 # en mm
+  stop_threshold: 500 # en mm
   bypass_detection: False # permet de ne pas crash si le lidar ne fonctionne pas quand set à True
-  coeff_nb_pts: 10000000
+  coeff_nb_pts: 5000000
 
 strategy:
   path: "configuration/strategy.yml"

@@ -103,6 +103,8 @@ class DetectionService:
         self.stop_time = 0
         self.lock = Lock()
         self.log.info("DetectionService started")
+        self.points_buffer = []
+        self.window_size = 1000
 
 
     def update(self, points: list[float]):
@@ -123,9 +125,12 @@ class DetectionService:
             - Le robot reste à l'arrêt pendant au moins 1 seconde après la détection,
               puis reprend automatiquement si les conditions sont redevenues normales.
         """
+        self.points_buffer += points
+        while len(self.points_buffer) > self.window_size:
+            self.points_buffer.pop(0)
+
         with self.lock:
-            treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
-            treat_dist -= 44
+            treat_dist = sum(1 for point in self.points_buffer if point.distance < self.threshold and point.distance > 100)
             self.log.debug(f"Total pts under threashold: {treat_dist}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
@@ -138,8 +143,6 @@ class DetectionService:
                     self.stop_time = time.time()
                     self.stop = True
 
-
-            
 class PrinterService:
     # Visualisation des données du LIDAR que pour le debug car ralentit la rasp
     def update(self, points):
