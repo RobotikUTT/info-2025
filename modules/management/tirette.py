@@ -19,6 +19,7 @@ def choose_team():
     else:
         print("INTERRUPTEUR: Position BASSE : team BLEU")
         return False
+from time import time, sleep
 
 
 def start() -> bool:
@@ -37,7 +38,6 @@ def start() -> bool:
     # Initialize previous state
     prev_switch_state = GPIO.input(SWITCH_PIN)
     last_change_time = time()
-    GPIO.output(13, GPIO.LOW)
 
     try:
         current_state = GPIO.input(SWITCH_PIN)
@@ -54,7 +54,6 @@ def start() -> bool:
             if current_state != prev_switch_state and (current_time - last_change_time) >= DEBOUNCE_TIME_S:
                 if current_state == GPIO.HIGH:
                     print("TIRETTE: The limit switch: Tirette retirée")
-                    GPIO.output(13, GPIO.LOW)
                     return True
 
                 else:
@@ -63,7 +62,7 @@ def start() -> bool:
                 prev_switch_state = current_state
                 last_change_time = current_time
 
-            sleep(0.01)  # Small delay to avoid high CPU usage
+            time.sleep(0.01)  # Small delay to avoid high CPU usage
 
     except KeyboardInterrupt:
         GPIO.cleanup()
@@ -72,4 +71,3 @@ def on_ready():
     # TODO : need to start a LED when the robot is ready to start
     print(f"TIRETTE: The limit switch: Tirette armée")
     print(f"========== READY TO ROCK ==========")
-    GPIO.output(13, GPIO.HIGH)

@@ -59,11 +59,10 @@ class PositionController(Thread, ABC):
 
 
     def goTo(self, x, y, w, arrivedCallback=None):
-        with self.lock:
-            self.target_position = Position(x, y, w)
-            self.arrivedCallback = arrivedCallback
-            self.moving = True
         self.log.info(f"Nouvelle position cible : x={x}, y={y}, w={w}")
+        self.target_position = Position(x, y, w)
+        self.arrivedCallback = arrivedCallback
+        self.moving = True
 
     def isArrived(self):
         current_pos = self.positionTracker.getCurrentPosition()
@@ -87,9 +86,8 @@ class PositionController(Thread, ABC):
         self.log.info("Démarrage du thread de contrôle de position.")
         while self.running:
             pre_time = time.time()
-
             if self.moving:
-                # self.log.debugg(f"Detection {self.detection_service.stop}")
+                # self.log.debug(f"Detection {self.detection_service.stop}")
                 try:
                     with self.lock:
                         if self.isArrived():
@@ -126,22 +124,26 @@ class PositionControllerLinear(PositionController):
 
     def loop(self):
         current_pos = self.positionTracker.getCurrentPosition()
-        self.log.debug(f"Current position : {current_pos}")
+        # self.log.debug(f"Current position : {current_pos}")
 
         delta_pos = self.target_position.minus(current_pos)
         vect_speed = delta_pos.normalize().rotate(-current_pos.w)
 
         current_vel = self.positionTracker.getCurrentVelocity()
         current_speed = current_vel.norm()
-        self.log.debug(f"Current speed : {current_speed}")
-        speed = self.target_speed + (self.target_speed - current_speed) * self.target_acceleration
-
+        # self.log.debug(f"Current vel : {current_vel}")
+        # self.log.debug(f"Current speed : {current_speed}")
+        position_error = delta_pos.norm()
+        speed = min(current_speed + (self.target_speed - current_speed) * self.target_acceleration, position_error)
         vect_speed.multiplyPos(speed)
-        vect_speed.multiplyAngle(self.target_rotation_speed)
 
-        vec_cpy = vect_speed.copy()
-        # self.log.debugg(f"Valeurs : {vec_cpy.x}, {vec_cpy.y}, {vec_cpy.w}")
-        self.speedCommunication.sendSpeedCart(vec_cpy.x, vec_cpy.y, 0.0)
+        angle_error = delta_pos.w
+        # angle_error = self.target_position.w - current_pos
+        angle_coeff = min(abs(angle_error), self.target_rotation_speed)
+        vect_speed.multiplyAngle(-angle_coeff)
+        vec_cpy = vect_speed.rotate(2.512)
+        # self.log.debug(f"Valeurs : {vec_cpy.x}, {vec_cpy.y}, {vec_cpy.w}")
+        self.speedCommunication.sendSpeedCart(*vec_cpy.get())
 
     def _setup(self):
         pass

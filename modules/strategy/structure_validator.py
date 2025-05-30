@@ -12,7 +12,10 @@ def verify(structure):
                         "move": {
                             "type": "object",
                             "properties": {
-                                "type": {"type": "string", "enum": ["named", "absolute", "relative"]},
+                                "type": {
+                                    "type": "string",
+                                    "enum": ["named", "absolute", "relative"]
+                                },
                                 "target": {"type": "string"},
                                 "x": {"type": "number"},
                                 "y": {"type": "number"},
@@ -28,18 +31,11 @@ def verify(structure):
                 {
                     "properties": {
                         "effect": {
-                            "type": "object",
-                            "properties": {
-                                "take": {
-                                    "type": "array",
-                                    "items": {"type": "integer"}
-                                },
-                                "release": {
-                                    "type": "array",
-                                    "items": {"type": "integer"}
-                                }
-                            },
-                            "additionalProperties": False
+                            "type": "string",
+                            "enum": [
+                                "set_banner_close", "set_banner_open",
+                                "take_everything", "put_down_everything"
+                            ]
                         }
                     },
                     "required": ["effect"],

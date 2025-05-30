@@ -20,7 +20,8 @@ class Position:
     def normalize(self) -> 'Position':
         d = math.hypot(self.x, self.y)
         norm_x, norm_y = (0.0, 0.0) if d == 0 else (self.x / d, self.y / d)
-        return Position(norm_x, norm_y, self.w)
+        norm_w = 1 if self.w > 0 else -1
+        return Position(norm_x, norm_y, norm_w)
 
     def norm(self) -> float:
         """Retourne la norme du vecteur (x, y)."""
@@ -53,6 +54,7 @@ class Position:
         reached_y = abs(self.y - other.y) <= error_pos
 
         delta_w = self.normalize_angle(self.w - other.w)
+        print("error angle : ", delta_w)
         reached_w = abs(delta_w) <= error_angle
 
         return reached_x and reached_y and reached_w

@@ -12,7 +12,9 @@ class Strategy(Thread):
         self.log = Log("Strategy")
         self.config = Config().get()
         self.strategy = load_yml(self.config["strategy"]["path"])
+        self.log.info(f"Stratégie chargée : {self.strategy}")
         self.map = load_yml(self.config["run"]["map_file"])
+        self.log.info(f"Map chargée : {self.map}")
 
         if not structure_validator.verify(self.strategy):
             raise Exception("Bad strategy format")
@@ -24,17 +26,22 @@ class Strategy(Thread):
 
         self.step_queue = Queue()
 
+        self.step_queue.put(self.strategy[0])
+
     def run(self):
         while True:
+            self.log.info("Running strat")
             step = self.step_queue.get()
             if step:
                 self.redirect(step)
 
     def move_named(self, name):
         self.log.info(f"move_named to {name}")
-        if name in self.map:
-            pos = self.map[name]
-            self.move_absolute(pos['x'], pos['y'], pos['w'])
+        for i in self.map:
+            if name == i["name"]:
+                self.move_absolute(i['x'], i['y'], i['r'])
+                return
+        self.nextStep()
 
     def move_absolute(self, x, y, w):
         self.log.info(f"move_absolute to x:{x}, y:{y}, w:{w}")
@@ -43,18 +50,6 @@ class Strategy(Thread):
     def move_relative(self, x, y, w):
         self.log.info(f"move_delta by x:{x}, y:{y}, w:{w}")
         self.position_controller.goToRelative(x, y, w, self.nextStep)
-
-    def effect_take(self, ids):
-        self.log.info(f"effect_take ids: {ids}")
-        for id in ids:
-            self.effector_controller.magnetize(id)
-        self.nextStep()
-
-    def effect_release(self, ids):
-        self.log.info(f"effect_release ids: {ids}")
-        for id in ids:
-            self.effector_controller.demagnetize(id)
-        self.nextStep()
 
     def wait(self, duration):
         self.log.info(f"wait for {duration} seconds")
@@ -70,6 +65,7 @@ class Strategy(Thread):
             self.log.info("Stratégie terminée.")
 
     def redirect(self, step):
+        self.log.info(f"strategy step : {step}")
         if "move" in step:
             move = step["move"]
             move_type = move.get("type")
@@ -81,13 +77,22 @@ class Strategy(Thread):
                 self.move_relative(move["x"], move["y"], move["w"])
             else:
                 self.log.error(f"Type de mouvement inconnu : {move_type}")
+
         elif "effect" in step:
             effect = step["effect"]
-            if "take" in effect:
-                self.effect_take(effect["take"])
-            if "release" in effect:
-                self.effect_release(effect["release"])
+            if effect == "set_banner_close":
+                self.effector_controller.set_banner_close()
+            elif effect == "set_banner_open":
+                self.effector_controller.set_banner_open()
+            elif effect == "take_everything":
+                self.effector_controller.take_everything()
+            elif effect == "put_down_everything":
+                self.effector_controller.put_down_everything()
+            else:
+                print(f"⚠️ Effet inconnu : {effect}")
+            self.nextStep()
         elif "wait" in step:
             self.wait(step["wait"])
+
         else:
             self.log.warn(f"Étape inconnue ou non gérée : {step}")
