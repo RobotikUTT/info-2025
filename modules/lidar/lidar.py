@@ -125,10 +125,12 @@ class DetectionService:
         """
         with self.lock:
             treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
-            # self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
+            treat_dist -= 14
+            self.log.debug(f"Total pts under threashold: {treat_dist}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
             if self.threshold != 0:
+                self.log.debug(f"nb_pts_threashold: {self.coeff_nb_pts/self.threshold**2}")
                 if treat_dist > self.coeff_nb_pts/self.threshold**2:
                     self.stop_time = time.time()
                     self.stop = True
