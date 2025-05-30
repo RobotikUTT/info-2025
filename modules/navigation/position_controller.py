@@ -133,11 +133,14 @@ class PositionControllerLinear(PositionController):
         current_speed = current_vel.norm()
         # self.log.debug(f"Current vel : {current_vel}")
         # self.log.debug(f"Current speed : {current_speed}")
-        speed = self.target_speed + (self.target_speed - current_speed) * self.target_acceleration
-
+        position_error = delta_pos.norm()
+        speed = min(current_speed + (self.target_speed - current_speed) * self.target_acceleration, position_error)
         vect_speed.multiplyPos(speed)
-        angle_error = self.target_position.w - current_pos.w
-        vect_speed.multiplyAngle(-self.target_rotation_speed * abs(angle_error))
+
+        angle_error = delta_pos.w
+        # angle_error = self.target_position.w - current_pos
+        angle_coeff = min(abs(angle_error), self.target_rotation_speed)
+        vect_speed.multiplyAngle(-angle_coeff)
         vec_cpy = vect_speed.rotate(2.512)
         # self.log.debug(f"Valeurs : {vec_cpy.x}, {vec_cpy.y}, {vec_cpy.w}")
         self.speedCommunication.sendSpeedCart(*vec_cpy.get())
