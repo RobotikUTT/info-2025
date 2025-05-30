@@ -44,7 +44,7 @@ def run_lidar_detection():
     print("LIDAR et détection démarrés. En attente d'obstacles...")
 
     while True:
-        if detection_service.stop:
+        if detection_service.stop():
             print("### Obstacle détecté ! ###")
         else:
             print("Pas d'obstacle.")

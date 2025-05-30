@@ -1,7 +1,9 @@
-import jsonschema
-from jsonschema import validate
+import yaml
+from jsonschema import validate, exceptions as jsonschema_exceptions
+import pprint
 
 def verify(structure):
+    pprint.pprint(structure)
     schema = {
         "type": "array",
         "items": {
@@ -30,14 +32,8 @@ def verify(structure):
                         "effect": {
                             "type": "object",
                             "properties": {
-                                "take": {
-                                    "type": "array",
-                                    "items": {"type": "integer"}
-                                },
-                                "release": {
-                                    "type": "array",
-                                    "items": {"type": "integer"}
-                                }
+                                "take": {"type": "array", "items": {"type": "integer"}},
+                                "release": {"type": "array", "items": {"type": "integer"}}
                             },
                             "additionalProperties": False
                         }
@@ -59,7 +55,10 @@ def verify(structure):
     try:
         validate(instance=structure, schema=schema)
         print("✅ Stratégie YAML valide !")
-        return True
-    except jsonschema.exceptions.ValidationError as e:
+    except jsonschema_exceptions.ValidationError as e:
         print("❌ Erreur de validation :", e.message)
-        return False
+
+with open("configuration/strategy.yml") as f:
+    data = yaml.safe_load(f)
+    print("Type YAML chargé :", type(data))
+    verify(data)

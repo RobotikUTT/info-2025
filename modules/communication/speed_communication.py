@@ -1,5 +1,6 @@
 from modules.communication.i2c_communication import I2CCommunication
 from utils.log import Log
+import math
 
 # Si bug I2C : sudo i2cdetect -y 1
 # Permet de voir les adresses available
@@ -8,9 +9,11 @@ class SpeedCommunication(I2CCommunication):
     def __init__(self):
         super().__init__("esp_steppers")
         self.log = Log("SpeedCommunication")
+        self.direction = 0 # radians
 
-
-    def sendSpeedCart(self, x: float, y: float, rot: float, vit: float):
+    def sendSpeedCart(self, x: float, y: float, rot: float, vit: float = None):
+        self.direction = math.atan2(y, x)
+        print(f"Data envoyé par la classe: {x}, {y}, {rot}")
         """
           Envoie les vitesses du robot sous forme cartésienne.
 

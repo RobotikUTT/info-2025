@@ -93,44 +93,58 @@ class LidarService(Thread):
 
 
 class DetectionService:
-    # Logique de détection obstacle sur le périmètre
     def __init__(self):
         self.config = Config().get()
         self.log = Log("DetectionService")
-        self.threshold = self.config["detection"]["stop_threshold"] # distance en mm pour l'arrêt
-        self.stop = False
+        self.threshold = self.config["detection"]["stop_threshold"]  # distance en mm pour l'arrêt
         self.stop_time = 0
         self.lock = Lock()
         self.log.info("DetectionService started")
+        self.detection_range = self.config["detection"]["detection_range"]
+        self.points = []
+        self.stopped = False
 
-
-    def update(self, points: list[float]):
+    def update(self, points: list):
         """
-        Met à jour l'état d'arrêt du robot en fonction des distances mesurées.
+            Met à jour l'état d'arrêt du robot en fonction des distances mesurées.
 
-        Args:
-            points (list): Liste d'objets contenant un attribut `distance` (float),
-                           représentant la distance mesurée à un obstacle.
+            Args:
+                points (list): Liste d'objets contenant un attribut `distance` (float),
+                               représentant la distance mesurée à un obstacle.
 
-        Returns:
-            None
+            Returns:
+                None
 
-        Comportement:
-            - Compte le nombre de points dont la distance est inférieure à un seuil (`self.threshold`)
-              et différente de 0 (valeurs valides).
-            - Si plus de 20 points détectent un obstacle à distance courte, le robot est stoppé.
-            - Le robot reste à l'arrêt pendant au moins 1 seconde après la détection,
-              puis reprend automatiquement si les conditions sont redevenues normales.
+            Comportement:
+                - Compte le nombre de points dont la distance est inférieure à un seuil (`self.threshold`)
+                  et différente de 0 (valeurs valides).
+                - Si plus de 20 points détectent un obstacle à distance courte, le robot est stoppé.
+                - Le robot reste à l'arrêt pendant au moins 1 seconde après la détection,
+                  puis reprend automatiquement si les conditions sont redevenues normales.
         """
         with self.lock:
-            treat_dist = sum(1 for point in points if point.distance < self.threshold and point.distance != 0)
-            # self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
-            if self.stop and time.time() - self.stop_time > 1:
-                self.stop = False
+            self.points = points
+
+    def stop(self, angle=None):
+        with self.lock:
+            if angle is not None:
+                treat_dist = sum(1 for point in self.points
+                                 if point.distance < self.threshold and point.distance != 0
+                                 and (angle - self.detection_range) < point.angle < (angle + self.detection_range))
+            else:
+                treat_dist = sum(1 for point in self.points if point.distance < self.threshold and point.distance != 0)
+
+            if self.stopped and time.time() - self.stop_time > 1:
+                self.stopped = False
+                return False
             if treat_dist > 20:
                 self.stop_time = time.time()
-                self.stop = True
                 self.log.info("### STOP : Obstacle detected ###")
+                self.stopped = True
+                return True
+            self.stopped = False
+            return False
+
             
 class PrinterService:
     # Visualisation des données du LIDAR que pour le debug car ralentit la rasp

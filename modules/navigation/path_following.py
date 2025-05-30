@@ -72,7 +72,7 @@ class PathFollower(SpeedCommunication):
 
     def handle_detection(self):
         while not self.interrupted:
-            if self.detection_service and self.detection_service.stop:
+            if self.detection_service and self.detection_service.stop(math.degrees(self.direction)):
                 self.interrupted = True
                 self.log.warn("Obstacle détecté ! Envoi d'un STOP d'urgence.")
                 self.sendSpeedCart(-1, -1, -1, 0)  # STOP immédiat

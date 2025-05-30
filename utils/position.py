@@ -53,3 +53,7 @@ class Position:
 
     def get(self) -> tuple[float, float, float]:
         return self.x, self.y, self.w
+
+    def angle_xy(self) -> float:
+        """Renvoie l'angle du vecteur (x, y) par rapport à l'axe des x en radians, entre -π et π."""
+        return math.atan2(self.y, self.x)

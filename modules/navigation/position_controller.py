@@ -97,7 +97,7 @@ class PositionController(Thread, ABC):
                             self.log.info("Position cible atteinte.")
                             if callback and callable(callback):  # WTF is this ? Type confusion
                                 callback()
-                        if self.detection_service.stop:
+                        if self.detection_service.stop():
                             self.speedCommunication.sendSpeedCart(0, 0, 0)
                             self.obstacleDetected()
                         else:

@@ -3,8 +3,8 @@ from time import sleep
 
 def main():
     s_com = SpeedCommunication()
-    s_com.sendSpeedCart(0.1, 0.1, 0);
-    sleep(2)
+    s_com.sendSpeedCart(50.0, 50.0, 0);
+    sleep(3)
     s_com.sendSpeedCart(0, 0, 0);
 
 if __name__ == "__main__":
