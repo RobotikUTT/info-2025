@@ -131,12 +131,12 @@ class DetectionService:
 
         with self.lock:
             treat_dist = sum(1 for point in self.points_buffer if point.distance < self.threshold and point.distance > 100)
-            self.log.debug(f"Total pts under threashold: {treat_dist}")
+            # self.log.debug(f"Total pts under threashold: {treat_dist}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
                 self.log.info("### STOP : disabled ###")
             if self.threshold != 0:
-                self.log.debug(f"nb_pts_threashold: {self.coeff_nb_pts/self.threshold**2}")
+                # self.log.debug(f"nb_pts_threashold: {self.coeff_nb_pts/self.threshold**2}")
                 if treat_dist > self.coeff_nb_pts/self.threshold**2:
                     if not self.stop:
                         self.log.info("### STOP : Obstacle detected ###")

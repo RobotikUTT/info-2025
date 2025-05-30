@@ -39,19 +39,16 @@ def runPathFollowing():
 
 
 def runStrategy():
-    lidar_service = LidarService()
-    lidar_service.start()
+    ld = LidarService()
+    ld.start()
+    position_controller = PositionControllerLinear(ld, DetectionService())
+    position_controller.start()
 
-    detection_service = DetectionService()
-
-    lidar_service.observers += [detection_service]
-
-    effector_controller = EffectorsControl()
-
-    position_controller = PositionControllerLinear(detection_service)
+    effector_controller = EffectorsControl("esp_effectors")
 
     strategy = Strategy(position_controller, effector_controller)
     strategy.start()
+    strategy.join()
 
 
 def runTests():

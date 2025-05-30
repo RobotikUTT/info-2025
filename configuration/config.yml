@@ -42,7 +42,7 @@ serial:
 detection:
   stop_threshold: 500 # en mm
   bypass_detection: False # permet de ne pas crash si le lidar ne fonctionne pas quand set à True
-  coeff_nb_pts: 5000000
+  coeff_nb_pts: 20000000
 
 strategy:
   path: "configuration/strategy.yml"
@@ -56,5 +56,5 @@ PositionController:
   acceleration: 0.2              # Accélération cible (m/s²)
   rotation_acceleration: 0.5    # Accélération angulaire cible (rad/s²)
   update_rate: 50                # Fréquence de mise à jour en Hz
-  error_pos: 0.01                # Erreur de position tolérée (m)
-  error_angle: 0.05              # Erreur d'angle tolérée (rad)
+  error_pos: 0.02                # Erreur de position tolérée (m)
+  error_angle: 0.2              # Erreur d'angle tolérée (rad)
