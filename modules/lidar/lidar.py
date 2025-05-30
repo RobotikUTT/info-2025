@@ -68,7 +68,7 @@ class LidarService(Thread):
             if not self.config["detection"]["bypass_detection"]:
                 # self.log.debug("Lidar ... looking for real data")
                 self.serial.reset_input_buffer()
-                data = self.serial.read(250)
+                data = self.serial.read(2000)
 
                 # self.log.debug(f"Raw data length: {len(data)} - data preview: {data[:20]}") # TODO : continuer patching ici
 
@@ -98,6 +98,7 @@ class DetectionService:
         self.config = Config().get()
         self.log = Log("DetectionService")
         self.threshold = self.config["detection"]["stop_threshold"] # distance en mm pour l'arrêt
+        self.coeff_nb_pts = self.config["detection"]["coeff_nb_pts"] # un coefficient du nombre de pts nécessaires à la détection
         self.stop = False
         self.stop_time = 0
         self.lock = Lock()
@@ -127,10 +128,11 @@ class DetectionService:
             # self.log.debug(f"Parsed data sample (first 5 points): {points[:5]}")
             if self.stop and time.time() - self.stop_time > 1:
                 self.stop = False
-            if treat_dist > 20:
-                self.stop_time = time.time()
-                self.stop = True
-                self.log.info("### STOP : Obstacle detected ###")
+            if self.threshold != 0:
+                if treat_dist > self.coeff_nb_pts/self.threshold**2:
+                    self.stop_time = time.time()
+                    self.stop = True
+                    self.log.info("### STOP : Obstacle detected ###")
             
 class PrinterService:
     # Visualisation des données du LIDAR que pour le debug car ralentit la rasp
