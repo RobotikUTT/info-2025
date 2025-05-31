@@ -43,8 +43,8 @@ def runStrategy(team):
     ld = LidarService()
     ld.start()
     position_controller = PositionControllerLinear(ld, DetectionService())
-    position_controller.speedCommunication.sendSpeedCart(-0.5 * 0.523598, -0.5)
     position_controller.start()
+    position_controller.speedCommunication.sendSpeedCart(-0.5 * 0.523598, -0.5, 0) # pour aller en arrière au début
 
     effector_controller = EffectorsControl("esp_effectors")
 

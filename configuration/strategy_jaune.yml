@@ -1,15 +1,27 @@
 # exemple de strategie
+- wait : 1
 - set_pos :
       x: 0
       y: 0
       w: 0.523598
+- wait : 1
+- move :
+    type : "named"
+    target : "zone_conserve"
+- wait : 0.5
+- effect : "take_everything"
+- wait : 1
+- move :
+    type : "named"
+    target : "zone_depart"
 - move :
     type : "relative"
-    x: 0.4
-    y: 0
-    w: 0
+    x : 0
+    y : 0
+    w : 3.14
 - move :
     type : "relative"
-    x: 0
-    y: 0.4
-    w: 0
+    x : 0
+    y : 0
+    w : 3.14
+
