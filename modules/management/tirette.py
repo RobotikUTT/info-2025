@@ -5,6 +5,7 @@ from utils.log import Log
 LED_PIN = 13
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
+BLINK_DELAY = 0.1
 
 SWITCH_PIN = 26            # GPIO du switch 2 positions
 DEBOUNCE_TIME_S = 0.2      # Anti-rebond (en secondes)
@@ -50,6 +51,12 @@ def start() -> bool:
             log.info("TIRETTE: Veuillez armer la tirette")
 
         while True:
+            # Blink in order to wait to be started
+            GPIO.output(LED_PIN, GPIO.HIGH)  # LED ON
+            sleep(BLINK_DELAY)
+            GPIO.output(LED_PIN, GPIO.LOW)  # LED OFF
+            sleep(BLINK_DELAY)
+
             current_state = GPIO.input(SWITCH_PIN)
             current_time = time()
 
@@ -64,8 +71,6 @@ def start() -> bool:
 
                 prev_switch_state = current_state
                 last_change_time = current_time
-
-            sleep(0.01)  # Small delay to avoid high CPU usage
 
     except KeyboardInterrupt:
         GPIO.cleanup()
