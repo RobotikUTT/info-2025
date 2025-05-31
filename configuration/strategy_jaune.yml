@@ -3,7 +3,7 @@
 - set_pos :
       x: 0
       y: 0
-      w: 0.523598
+      w: -0.523598
 - wait : 1
 - move :
     type : "named"
