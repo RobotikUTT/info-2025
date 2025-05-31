@@ -56,6 +56,7 @@ def start() -> bool:
             if current_state != prev_switch_state and (current_time - last_change_time) >= DEBOUNCE_TIME_S:
                 if current_state == GPIO.HIGH:
                     log.info("TIRETTE: The limit switch: Tirette retirée")
+                    GPIO.output(LED_PIN, GPIO.LOW)
                     return True
 
                 else:
@@ -73,3 +74,4 @@ def on_ready():
     # TODO : need to start a LED when the robot is ready to start
     log.info(f"TIRETTE: The limit switch: Tirette armée")
     log.info(f"========== READY TO ROCK ==========")
+    GPIO.output(LED_PIN, GPIO.HIGH)
