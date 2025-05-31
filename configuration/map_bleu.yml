@@ -1,0 +1,17 @@
+- name: "zone_depart"
+  x: 1.75
+  y: 0.30
+  r: -1.57
+- name: "zone_conserve1"
+  x: 1.94
+  y: 0.6
+  r: 1.57
+- name: "zone_conserve2"
+  x: 2.22
+  y: 0.6
+  r: -1.57
+- name: "zone_arrivee"
+  x: 2.65
+  y: 1.8
+  r: 1.57
+

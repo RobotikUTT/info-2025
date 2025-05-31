@@ -134,8 +134,9 @@ class PositionControllerLinear(PositionController):
         # self.log.debug(f"Current vel : {current_vel}")
         # self.log.debug(f"Current speed : {current_speed}")
         position_error = delta_pos.norm()
-        speed = min(current_speed + (self.target_speed - current_speed) * self.target_acceleration, position_error)
-        vect_speed.multiplyPos(speed)
+        self.log.debug(f"current real speed : {current_speed}")
+        speed = max(min(current_speed + self.target_acceleration, position_error, self.target_speed), 0.005)
+        vect_speed.multiplyPos(speed * 2.4)
 
         angle_error = delta_pos.w
         # angle_error = self.target_position.w - current_pos

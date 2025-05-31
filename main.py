@@ -6,6 +6,7 @@ from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
 from modules.management.tirette import start, choose_team
 from modules.management.scoring import show_score
+from modules.communication.speed_communication import SpeedCommunication
 from utils.log import Log
 import time
 import threading
@@ -44,7 +45,6 @@ def runStrategy(team):
     ld.start()
     position_controller = PositionControllerLinear(ld, DetectionService())
     position_controller.start()
-    position_controller.speedCommunication.sendSpeedCart(-0.5 * 0.523598, -0.5, 0) # pour aller en arrière au début
 
     effector_controller = EffectorsControl("esp_effectors")
 

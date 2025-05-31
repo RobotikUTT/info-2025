@@ -20,11 +20,6 @@ class PositionTracker:
 
         self.myOtos.begin()
 
-        self.log.info("Ensure the OTOS is flat and stationary during calibration!")
-        for i in range(5, 0, -1):
-            self.log.info("Calibrating in %d seconds..." % i)
-            time.sleep(1)
-
         self.log.info("Calibrating IMU...")
         self.myOtos.calibrateImu()
 

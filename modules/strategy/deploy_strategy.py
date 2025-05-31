@@ -14,7 +14,9 @@ class Strategy(Thread):
         self.config = Config().get()
         self.strategy = load_yml(self.config["strategy"]["path"]["jaune" if jaune else "bleu"])
         self.log.info(f"Stratégie chargée : {self.strategy}")
-        self.map = load_yml(self.config["run"]["map_file"])
+        color = "jaune" if jaune else "bleu"
+        filename = f"{self.config['run']['map_file']}_{color}.yml"
+        self.map = load_yml(filename)
         self.log.info(f"Map chargée : {self.map}")
 
         if not structure_validator.verify(self.strategy):
@@ -54,6 +56,7 @@ class Strategy(Thread):
 
     def wait(self, duration):
         self.log.info(f"wait for {duration} seconds")
+        self.position_controller.speedCommunication.sendSpeedCart(0, 0, 0)
         time.sleep(duration)
         self.nextStep()
 

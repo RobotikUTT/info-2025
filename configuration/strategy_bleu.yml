@@ -1,26 +1,77 @@
-# exemple de strategie
+# bleu
+- set_pos :
+      x: 1.75
+      y: 0.22
+      w: 0.523598
 - move :
     type : "relative"
     x : 0
-    y : 0.2
-    w :
-- effect : "set_banner_close"
-- move:
+    y : -0.1
+    w : 0
+- effect : "set_banner_open"
+- move :
+    type : "relative"
+    x : 0
+    y : 0.1
+    w : 0
+- move :
+    type : "named"
+    target : "zone_conserve1"
+- effect : "take_everything"
+- move :
+    type : "relative"
+    x : 0
+    y : 0.3
+    w : 0
+- wait : 1
+- move :
+    type : "relative"
+    x : 0
+    y : -0.2
+    w : 0
+- move :
+    type : "named"
+    target : "zone_depart"
+- effect : "put_down_everything"
+- wait : 3
+- move :
+    type : "relative"
+    x : 0
+    y : 0.4
+    w : 0
+- move :
     type : "relative"
     x : 0
     y : 0
-    w : 3.14 # equivalent à tourner d'un demi tour
-- effect : "set_banner_open"
-- wait : 1.0
-- move :
-    type : "absolute"
-    x : 100
-    y : 100
-    w : 0
-- wait : 1.0 # en secondes
+    w : 1.57
 - effect : "take_everything"
-- wait : 1.0
 - move :
     type : "named"
-    target : "zone_depot"
+    target : "zone_conserve2"
+- move :
+    type : "relative"
+    x : 0
+    y : -0.25
+    w : 0
+- wait : 1
+- move :
+    type : "relative"
+    x : 0
+    y : 0.3
+    w : 0
+- move :
+    type : "named"
+    target : "zone_depart"
 - effect : "put_down_everything"
+- wait : 1
+- move :
+    type : "relative"
+    x : 0
+    y : 0.4
+    w : 0
+- move :
+    type : "named"
+    target : "zone_arrivee"
+- wait : 1
+- wait : 1
+- wait : 1000

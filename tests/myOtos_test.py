@@ -17,11 +17,6 @@ def main():
 
     myOtos.begin()
 
-    print("Placez le capteur à plat et ne bougez pas pendant la calibration...")
-    for i in range(5, 0, -1):
-        print(f"Calibration dans {i} secondes...")
-        time.sleep(1)
-
     print("Calibration de l'IMU en cours...")
     myOtos.calibrateImu()
 
