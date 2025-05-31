@@ -10,6 +10,7 @@ BLINK_DELAY = 0.1
 SWITCH_PIN = 26            # GPIO du switch 2 positions
 DEBOUNCE_TIME_S = 0.2      # Anti-rebond (en secondes)
 GPIO.setmode(GPIO.BCM)
+READY = False
 GPIO.setup(SWITCH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 log = Log("Tirette")
 
@@ -51,11 +52,14 @@ def start() -> bool:
             log.info("TIRETTE: Veuillez armer la tirette")
 
         while True:
-            # Blink in order to wait to be started
-            GPIO.output(LED_PIN, GPIO.HIGH)  # LED ON
-            sleep(BLINK_DELAY)
-            GPIO.output(LED_PIN, GPIO.LOW)  # LED OFF
-            sleep(BLINK_DELAY)
+            if READY == False:
+                # Blink in order to wait to be started
+                GPIO.output(LED_PIN, GPIO.HIGH)  # LED ON
+                sleep(BLINK_DELAY)
+                GPIO.output(LED_PIN, GPIO.LOW)  # LED OFF
+                sleep(BLINK_DELAY)
+            else:
+                sleep(DEBOUNCE_TIME_S) # just pour tempo un peu
 
             current_state = GPIO.input(SWITCH_PIN)
             current_time = time()
@@ -80,3 +84,4 @@ def on_ready():
     log.info(f"TIRETTE: The limit switch: Tirette armée")
     log.info(f"========== READY TO ROCK ==========")
     GPIO.output(LED_PIN, GPIO.HIGH)
+    READY = True
