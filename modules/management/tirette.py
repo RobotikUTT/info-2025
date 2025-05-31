@@ -72,6 +72,8 @@ def start() -> bool:
 
                 else:
                     on_ready()
+                    GPIO.output(LED_PIN, GPIO.HIGH)
+                    READY = True
 
                 prev_switch_state = current_state
                 last_change_time = current_time
@@ -83,5 +85,3 @@ def on_ready():
     # TODO : need to start a LED when the robot is ready to start
     log.info(f"TIRETTE: The limit switch: Tirette armée")
     log.info(f"========== READY TO ROCK ==========")
-    GPIO.output(LED_PIN, GPIO.HIGH)
-    READY = True
