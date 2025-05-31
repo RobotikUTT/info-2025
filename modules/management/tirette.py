@@ -1,23 +1,26 @@
 import RPi.GPIO as GPIO
 from time import time, sleep
+from utils.log import Log
 
 LED_PIN = 13
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
+BLINK_DELAY = 0.1
 
 SWITCH_PIN = 26            # GPIO du switch 2 positions
 DEBOUNCE_TIME_S = 0.2      # Anti-rebond (en secondes)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(SWITCH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+log = Log("Tirette")
 
 def choose_team():
     # Return True si Jaune False si bleu
     current_state = GPIO.input(SWITCH_PIN)
     if current_state == GPIO.HIGH:
-        print("INTERRUPTEUR: Position HAUTE : team JAUNE")
+        log.info("INTERRUPTEUR: Position HAUTE : team JAUNE")
         return True
     else:
-        print("INTERRUPTEUR: Position BASSE : team BLEU")
+        log.info("INTERRUPTEUR: Position BASSE : team BLEU")
         return False
 from time import time, sleep
 
@@ -45,15 +48,22 @@ def start() -> bool:
             on_ready()
 
         else:
-            print("TIRETTE: Veuillez armer la tirette")
+            log.info("TIRETTE: Veuillez armer la tirette")
 
         while True:
+            # Blink in order to wait to be started
+            GPIO.output(LED_PIN, GPIO.HIGH)  # LED ON
+            sleep(BLINK_DELAY)
+            GPIO.output(LED_PIN, GPIO.LOW)  # LED OFF
+            sleep(BLINK_DELAY)
+
             current_state = GPIO.input(SWITCH_PIN)
             current_time = time()
 
             if current_state != prev_switch_state and (current_time - last_change_time) >= DEBOUNCE_TIME_S:
                 if current_state == GPIO.HIGH:
-                    print("TIRETTE: The limit switch: Tirette retirée")
+                    log.info("TIRETTE: The limit switch: Tirette retirée")
+                    GPIO.output(LED_PIN, GPIO.LOW)
                     return True
 
                 else:
@@ -62,12 +72,11 @@ def start() -> bool:
                 prev_switch_state = current_state
                 last_change_time = current_time
 
-            sleep(0.01)  # Small delay to avoid high CPU usage
-
     except KeyboardInterrupt:
         GPIO.cleanup()
 
 def on_ready():
     # TODO : need to start a LED when the robot is ready to start
-    print(f"TIRETTE: The limit switch: Tirette armée")
-    print(f"========== READY TO ROCK ==========")
+    log.info(f"TIRETTE: The limit switch: Tirette armée")
+    log.info(f"========== READY TO ROCK ==========")
+    GPIO.output(LED_PIN, GPIO.HIGH)

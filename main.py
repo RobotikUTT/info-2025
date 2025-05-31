@@ -6,6 +6,7 @@ from modules.effectors.effectors_control import EffectorsControl
 from modules.navigation.position_controller import PositionControllerLinear
 from modules.management.tirette import start, choose_team
 from modules.management.scoring import show_score
+from utils.log import Log
 import time
 import threading
 
@@ -62,6 +63,7 @@ def runTests():
 
 
 if __name__ == "__main__":
+    log = Log("Main")
     parser = argparse.ArgumentParser(description="Robot control program entry point.")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--run', action='store_true', help='Run the main strategy')
@@ -77,6 +79,7 @@ if __name__ == "__main__":
 
     if start():
         team = choose_team() # TRUE si jaune, False sinon
+        log.debug(f"Team : {'JAUNE' if team == True else 'BLEU'}")
         # Si --score est fourni, on lance la fenêtre Tkinter dans un thread séparé
         if args.score is not None:
             threading.Thread(target=show_score, args=(args.score,), daemon=True).start()
