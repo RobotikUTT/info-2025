@@ -124,7 +124,7 @@ class PositionControllerLinear(PositionController):
 
     def loop(self):
         current_pos = self.positionTracker.getCurrentPosition()
-        self.log.debug(f"Current position : {current_pos}")
+        # self.log.debug(f"Current position : {current_pos}")
 
         delta_pos = self.target_position.minus(current_pos)
         vect_speed = delta_pos.normalize().rotate(-current_pos.w)
@@ -134,7 +134,7 @@ class PositionControllerLinear(PositionController):
         # self.log.debug(f"Current vel : {current_vel}")
         # self.log.debug(f"Current speed : {current_speed}")
         position_error = delta_pos.norm()
-        self.log.debug(f"current real speed : {current_speed}")
+        # self.log.debug(f"current real speed : {current_speed}")
         speed = max(min(current_speed + self.target_acceleration, position_error, self.target_speed), 0.005)
         vect_speed.multiplyPos(speed * 2.4)
 

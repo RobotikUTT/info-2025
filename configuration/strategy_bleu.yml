@@ -6,69 +6,31 @@
 - move :
     type : "relative"
     x : 0
-    y : -0.1
+    y : -0.115
     w : 0
 - effect : "set_banner_open"
+- wait : 3
 - move :
     type : "relative"
     x : 0
     y : 0.1
     w : 0
 - move :
-    type : "named"
-    target : "zone_conserve1"
-- effect : "take_everything"
+    type : "absolute"
+    x : 2.2079467
+    y : 1
+    w : -1.57
 - move :
-    type : "relative"
-    x : 0
-    y : 0.3
-    w : 0
+    type : "absolute"
+    x : 2.2079467
+    y : 0.24
+    w : -1.57
+- move :
+    type : "absolute"
+    x : 2.2079467
+    y : 1
+    w : -1.57
 - wait : 1
-- move :
-    type : "relative"
-    x : 0
-    y : -0.2
-    w : 0
-- move :
-    type : "named"
-    target : "zone_depart"
-- effect : "put_down_everything"
-- wait : 3
-- move :
-    type : "relative"
-    x : 0
-    y : 0.4
-    w : 0
-- move :
-    type : "relative"
-    x : 0
-    y : 0
-    w : 1.57
-- effect : "take_everything"
-- move :
-    type : "named"
-    target : "zone_conserve2"
-- move :
-    type : "relative"
-    x : 0
-    y : -0.25
-    w : 0
-- wait : 1
-- move :
-    type : "relative"
-    x : 0
-    y : 0.3
-    w : 0
-- move :
-    type : "named"
-    target : "zone_depart"
-- effect : "put_down_everything"
-- wait : 1
-- move :
-    type : "relative"
-    x : 0
-    y : 0.4
-    w : 0
 - move :
     type : "named"
     target : "zone_arrivee"

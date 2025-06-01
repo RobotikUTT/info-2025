@@ -27,6 +27,7 @@ from time import time, sleep
 
 
 def start() -> bool:
+    global READY
     """
     Permet de lancer le robot lorsque la tirette est enlevée
     """
